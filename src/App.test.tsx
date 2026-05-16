@@ -1,7 +1,14 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
+import { vi } from 'vitest';
 import App from './App';
+
+vi.mock('./lib/supabase', () => ({
+  isSupabaseConfigured: false,
+  supabase: null,
+  supabaseConfigMessage: 'Supabase 未配置。请设置 VITE_SUPABASE_URL 和 VITE_SUPABASE_ANON_KEY 后再使用 Studio 后台。',
+}));
 
 function renderApp(path = '/') {
   return render(
@@ -12,35 +19,39 @@ function renderApp(path = '/') {
 }
 
 describe('NexFolio app', () => {
-  it('renders home hero and primary entries with local fallback data', async () => {
+  it('renders the rebuilt independent developer hero', async () => {
     renderApp('/');
 
     expect(screen.getByRole('heading', { name: '个人数字平台' })).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: '探索我的项目' })).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: '阅读我的博客' })).toBeInTheDocument();
+    expect(screen.getByText('持续构建中的个人数字平台')).toBeInTheDocument();
+    expect(screen.getByText('当前重点')).toBeInTheDocument();
     await waitFor(() => {
-      expect(screen.queryByText(/正在读取项目内容/)).not.toBeInTheDocument();
+      expect(screen.getAllByText('暂未发布内容').length).toBeGreaterThan(0);
     });
   });
 
-  it('filters blog posts by search keyword', async () => {
+  it('shows empty blog state without local public content', async () => {
     const user = userEvent.setup();
     renderApp('/blog');
 
-    await user.type(screen.getByLabelText('搜索文章'), '第一天');
-
-    expect(screen.getByText('从第一天开始建立测试体系')).toBeInTheDocument();
-    expect(screen.queryByText('从工具集合到个人数字平台')).not.toBeInTheDocument();
+    expect(await screen.findByRole('heading', { name: '暂无文章' })).toBeInTheDocument();
+    await user.type(screen.getByLabelText('搜索文章'), '任何内容');
+    expect(screen.queryByText('真实文章')).not.toBeInTheDocument();
   });
 
-  it('renders richer project detail route from fallback data', async () => {
-    renderApp('/projects/nexfolio');
+  it('shows empty project and tool states without local public cards', async () => {
+    const { unmount } = renderApp('/projects');
+    expect(await screen.findByRole('heading', { name: '暂无项目' })).toBeInTheDocument();
+    unmount();
 
-    expect(await screen.findByRole('heading', { name: 'NexFolio 个人数字平台' })).toBeInTheDocument();
-    expect(screen.getByText('项目背景')).toBeInTheDocument();
-    expect(screen.getByText('为什么做')).toBeInTheDocument();
-    expect(screen.getByText('解决什么问题')).toBeInTheDocument();
-    expect(screen.getByText('访问链接状态')).toBeInTheDocument();
+    renderApp('/tools');
+    expect(await screen.findByRole('heading', { name: '暂无工具' })).toBeInTheDocument();
+  });
+
+  it('does not expose Tavern from the NexFolio main route tree', () => {
+    renderApp('/roleplay');
+
+    expect(screen.getByRole('heading', { name: '页面没有找到' })).toBeInTheDocument();
   });
 
   it('shows Supabase configuration guidance on studio login when env is missing', () => {
@@ -56,12 +67,5 @@ describe('NexFolio app', () => {
     await waitFor(() => {
       expect(screen.getByRole('heading', { name: 'Supabase 未配置' })).toBeInTheDocument();
     });
-  });
-
-  it('renders graceful 404 for unknown routes', () => {
-    renderApp('/unknown');
-
-    expect(screen.getByRole('heading', { name: '页面没有找到' })).toBeInTheDocument();
-    expect(screen.getAllByRole('link', { name: '返回首页' }).length).toBeGreaterThan(0);
   });
 });

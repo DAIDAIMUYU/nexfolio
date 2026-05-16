@@ -307,8 +307,8 @@ npm install 报告依赖审计漏洞；当前未执行强制修复，以保持 N
 
 ## 18. 第二阶段 Supabase Studio 本地验收
 
-- [x] 未配置 Supabase 时，首页、项目页、博客页、工具页继续显示本地数据。
-- [x] 未配置 Supabase 时，项目详情页和博客详情页继续显示本地详情。
+- [x] 未配置 Supabase 时，首页、项目页、博客页、工具页显示空状态，不展示示例内容。
+- [x] 未配置 Supabase 时，项目详情页和博客详情页显示未发布 / 不存在状态。
 - [x] `/studio/login` 可访问。
 - [x] 未配置 Supabase 时，`/studio/login` 显示清晰配置提示，不白屏。
 - [x] 未登录访问 `/studio` 会跳转到 `/studio/login`。
@@ -333,12 +333,12 @@ npm install 报告依赖审计漏洞；当前未执行强制修复，以保持 N
 问题记录：
 
 ```text
-第二阶段代码已完成本地未配置降级、前台 fallback、Studio 路由和 SQL/RLS 脚本。真实 Supabase 项目、环境变量、首个站主账号仍需人工配置；配置前 Studio 只能显示未配置提示，前台继续使用本地数据。
+第二阶段代码已完成本地未配置降级、前台空状态、Studio 路由和 SQL/RLS 脚本。真实 Supabase 项目、环境变量、首个站主账号仍需人工配置；配置前 Studio 只能显示未配置提示，前台不展示示例内容。
 ```
 
 ## 19. 第二阶段验收方式
 
-- 未配置 Supabase：访问 `/`、`/projects`、`/projects/nexfolio`、`/blog`、`/blog/testing-from-day-one`、`/tools` 应正常显示本地内容。
+- 未配置 Supabase：访问 `/`、`/projects`、`/projects/nexfolio`、`/blog`、`/blog/testing-from-day-one`、`/tools` 应正常显示空状态或未发布状态。
 - 未配置 Supabase：访问 `/studio/login` 应显示 Supabase 未配置提示。
 - 未配置 Supabase：访问 `/studio` 应跳转 `/studio/login`。
 - 配置 Supabase 后：站主可使用邮箱密码登录 `/studio/login`。
@@ -351,4 +351,33 @@ npm install 报告依赖审计漏洞；当前未执行强制修复，以保持 N
 
 ```text
 第二阶段本地代码与未配置降级验收通过；真实 Supabase 后台需要站主完成环境变量、SQL 和账号配置后继续线上验收。
+```
+
+## 20. 第二阶段 UI / 架构重构验收
+
+- [x] Tavern / roleplay 源码已隔离到 `packages/tavern/src/roleplay`。
+- [x] Tavern 文档已隔离到 `packages/tavern/docs/roleplay-tavern`。
+- [x] 主站不再 import Tavern 源码。
+- [x] 主站不再显示 `/roleplay` 导航入口。
+- [x] 访问 `/roleplay` 在主站返回 404，不再混入 NexFolio 路由。
+- [x] 本地项目、博客、工具示例数据已清空。
+- [x] 首页 Hero 已替换为个人介绍和当前重点。
+- [x] 首页不再显示 Now Building、Supabase Ready、Blue Glass UI 等模板内容。
+- [x] `/projects` 无发布内容时显示“暂无项目”。
+- [x] `/blog` 无发布内容时显示“暂无文章”。
+- [x] `/tools` 无发布内容时显示“暂无工具”。
+- [x] 首页模块无发布内容时显示“暂未发布内容”。
+- [x] 前台内容层只读取 Supabase published 内容。
+- [x] 草稿内容通过数据层过滤，不进入前台。
+- [x] Studio 后台保留。
+- [x] Supabase SQL 和 RLS 保留。
+- [x] `npm run lint` 通过。
+- [x] `npm run test` 通过。
+- [x] `npm run build` 通过。
+- [x] `npm run test:ui` 通过。
+
+验收状态：
+
+```text
+第二阶段 UI / 架构重构已完成，本地 lint、test、build、test:ui 均通过。真实 Supabase 项目仍需站主手动配置后进行线上发布流验收。
 ```

@@ -1,18 +1,12 @@
 import { Link, useParams } from 'react-router-dom';
 import { EmptyState } from '../components/ui/EmptyState';
 import { MotionPage } from '../components/ui/MotionPage';
-import { projects as localProjects } from '../data/projects';
 import { useAsyncData } from '../hooks/useAsyncData';
 import { getPublishedProjectBySlug } from '../lib/contentRepository';
 
 export function ProjectDetailPage() {
   const { id = '' } = useParams();
-  const fallback = localProjects.find((item) => item.id === id);
-  const { data: project, loading } = useAsyncData(
-    () => getPublishedProjectBySlug(id),
-    fallback,
-    [id],
-  );
+  const { data: project, loading } = useAsyncData(() => getPublishedProjectBySlug(id), undefined, [id]);
 
   if (!project && !loading) {
     return (
@@ -20,7 +14,7 @@ export function ProjectDetailPage() {
         <section className="page-section">
           <EmptyState
             title="项目不存在"
-            description="这个项目可能还没有发布，或链接已经调整。"
+            description="这个项目可能尚未发布，或链接已经调整。"
             actionLabel="返回项目列表"
             actionTo="/projects"
           />
@@ -33,7 +27,7 @@ export function ProjectDetailPage() {
     return (
       <MotionPage>
         <section className="page-section">
-          <EmptyState title="正在读取项目" description="正在加载项目详情，未配置 Supabase 时会自动使用本地数据。" />
+          <EmptyState title="正在读取项目" description="正在加载已发布项目详情。" />
         </section>
       </MotionPage>
     );
@@ -57,33 +51,37 @@ export function ProjectDetailPage() {
 
           <section>
             <h2>项目背景</h2>
-            <p>{project.background}</p>
+            <p>{project.background || '暂未补充项目背景。'}</p>
           </section>
           <section>
             <h2>为什么做</h2>
-            <p>{project.reason}</p>
+            <p>{project.reason || '暂未补充项目动机。'}</p>
           </section>
           <section>
             <h2>解决什么问题</h2>
-            <p>{project.problem}</p>
+            <p>{project.problem || '暂未补充问题描述。'}</p>
           </section>
           <section>
             <h2>技术方案</h2>
-            <p>{project.solution}</p>
+            <p>{project.solution || '暂未补充技术方案。'}</p>
           </section>
           <section>
             <h2>核心功能</h2>
-            <ul className="feature-list">
-              {project.features.map((feature) => (
-                <li key={feature}>{feature}</li>
-              ))}
-            </ul>
+            {project.features.length > 0 ? (
+              <ul className="feature-list">
+                {project.features.map((feature) => (
+                  <li key={feature}>{feature}</li>
+                ))}
+              </ul>
+            ) : (
+              <p>暂未补充核心功能。</p>
+            )}
           </section>
           <section>
             <h2>当前状态</h2>
             <p>{project.linkStatus}</p>
           </section>
-          {project.futurePlan ? (
+          {project.futurePlan && project.futurePlan.length > 0 ? (
             <section>
               <h2>后续计划</h2>
               <ul className="feature-list">

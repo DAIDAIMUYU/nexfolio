@@ -1,6 +1,6 @@
 # Supabase Setup
 
-本文档用于配置 NexFolio 第二阶段轻量真实后台。前台在未配置 Supabase 时会继续使用本地数据，配置完成后会优先读取 Supabase 中已发布内容。
+本文档用于配置 NexFolio 第二阶段轻量真实后台。前台只展示 Supabase 中已发布内容；未配置 Supabase 或表为空时显示空状态，不再回退到示例内容。
 
 ## 1. 创建 Supabase 项目
 
@@ -32,7 +32,7 @@ VITE_SUPABASE_ANON_KEY=your-anon-key
 
 未填写时：
 
-- 前台继续读取本地 TypeScript 数据。
+- 前台显示空状态，不展示 mock / 示例内容。
 - `/studio/login` 显示 Supabase 未配置提示。
 - 测试不会依赖真实 Supabase 项目。
 
@@ -60,7 +60,7 @@ VITE_SUPABASE_ANON_KEY
 - 发布内容时会设置 `is_published = true`。
 - 如果 `published_at` 为空，发布时会写入当前时间。
 - 取消发布不会强制清空 `published_at`。
-- 前台只读取已发布内容；如果 Supabase 请求失败或没有数据，会回退到本地数据。
+- 前台只读取已发布内容；如果 Supabase 请求失败或没有数据，会显示空状态。
 
 ## 7. RLS 策略说明
 

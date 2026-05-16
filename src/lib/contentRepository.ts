@@ -1,16 +1,13 @@
-import { posts as localPosts } from '../data/posts';
-import { projects as localProjects } from '../data/projects';
-import { tools as localTools } from '../data/tools';
 import type { BlogPost, ProjectItem, ToolItem } from '../data/types';
-import { isSupabaseConfigured, supabase } from './supabase';
 import { contentToParagraphs } from './listFields';
+import { isSupabaseConfigured, supabase } from './supabase';
 
 type ProjectRow = {
   slug: string;
   title: string;
   description: string;
-  type: string;
-  status: string;
+  type: string | null;
+  status: string | null;
   tags: string[] | null;
   tech_stack: string[] | null;
   cover: string | null;
@@ -24,33 +21,36 @@ type ProjectRow = {
   features: string[] | null;
   link_status: string | null;
   future_plan: string[] | null;
+  is_published?: boolean | null;
 };
 
 type PostRow = {
   slug: string;
   title: string;
   summary: string;
-  category: string;
+  category: string | null;
   tags: string[] | null;
   published_at: string | null;
   cover: string | null;
   content: string | null;
+  is_published?: boolean | null;
 };
 
 type ToolRow = {
   slug: string;
   name: string;
   description: string;
-  category: string;
+  category: string | null;
   url: string | null;
   icon: string | null;
   is_self_built: boolean | null;
   is_recommended: boolean | null;
   status: string | null;
+  is_published?: boolean | null;
 };
 
-function hasRemoteData<T>(data: T[] | null): data is T[] {
-  return Array.isArray(data) && data.length > 0;
+export function keepPublishedRows<T extends { is_published?: boolean | null }>(rows: T[] | null | undefined): T[] {
+  return Array.isArray(rows) ? rows.filter((row) => row.is_published !== false) : [];
 }
 
 function toProject(row: ProjectRow): ProjectItem {
@@ -58,8 +58,8 @@ function toProject(row: ProjectRow): ProjectItem {
     id: row.slug,
     title: row.title,
     description: row.description,
-    type: row.type as ProjectItem['type'],
-    status: row.status as ProjectItem['status'],
+    type: (row.type ?? '个人网站') as ProjectItem['type'],
+    status: (row.status ?? '已上线') as ProjectItem['status'],
     tags: row.tags ?? [],
     techStack: row.tech_stack ?? [],
     cover: row.cover ?? undefined,
@@ -81,7 +81,7 @@ function toPost(row: PostRow): BlogPost {
     id: row.slug,
     title: row.title,
     summary: row.summary,
-    category: row.category as BlogPost['category'],
+    category: (row.category ?? '开发记录') as BlogPost['category'],
     tags: row.tags ?? [],
     date: row.published_at ? row.published_at.slice(0, 10) : '',
     cover: row.cover ?? undefined,
@@ -94,7 +94,7 @@ function toTool(row: ToolRow): ToolItem {
     id: row.slug,
     name: row.name,
     description: row.description,
-    category: row.category as ToolItem['category'],
+    category: (row.category ?? '自研工具') as ToolItem['category'],
     url: row.url ?? undefined,
     icon: row.icon ?? undefined,
     isSelfBuilt: Boolean(row.is_self_built),
@@ -105,7 +105,7 @@ function toTool(row: ToolRow): ToolItem {
 
 export async function getPublishedProjects(): Promise<ProjectItem[]> {
   if (!isSupabaseConfigured || !supabase) {
-    return localProjects;
+    return [];
   }
 
   const { data, error } = await supabase
@@ -115,16 +115,16 @@ export async function getPublishedProjects(): Promise<ProjectItem[]> {
     .order('is_featured', { ascending: false })
     .order('published_at', { ascending: false });
 
-  if (error || !hasRemoteData<ProjectRow>(data)) {
-    return localProjects;
+  if (error) {
+    return [];
   }
 
-  return data.map(toProject);
+  return keepPublishedRows(data as ProjectRow[] | null).map(toProject);
 }
 
 export async function getPublishedProjectBySlug(slug: string): Promise<ProjectItem | undefined> {
   if (!isSupabaseConfigured || !supabase) {
-    return localProjects.find((item) => item.id === slug);
+    return undefined;
   }
 
   const { data, error } = await supabase
@@ -134,8 +134,8 @@ export async function getPublishedProjectBySlug(slug: string): Promise<ProjectIt
     .eq('is_published', true)
     .maybeSingle();
 
-  if (error || !data) {
-    return localProjects.find((item) => item.id === slug);
+  if (error || !data || (data as ProjectRow).is_published === false) {
+    return undefined;
   }
 
   return toProject(data as ProjectRow);
@@ -143,7 +143,7 @@ export async function getPublishedProjectBySlug(slug: string): Promise<ProjectIt
 
 export async function getPublishedPosts(): Promise<BlogPost[]> {
   if (!isSupabaseConfigured || !supabase) {
-    return localPosts;
+    return [];
   }
 
   const { data, error } = await supabase
@@ -152,16 +152,16 @@ export async function getPublishedPosts(): Promise<BlogPost[]> {
     .eq('is_published', true)
     .order('published_at', { ascending: false });
 
-  if (error || !hasRemoteData<PostRow>(data)) {
-    return localPosts;
+  if (error) {
+    return [];
   }
 
-  return data.map(toPost);
+  return keepPublishedRows(data as PostRow[] | null).map(toPost);
 }
 
 export async function getPublishedPostBySlug(slug: string): Promise<BlogPost | undefined> {
   if (!isSupabaseConfigured || !supabase) {
-    return localPosts.find((item) => item.id === slug);
+    return undefined;
   }
 
   const { data, error } = await supabase
@@ -171,8 +171,8 @@ export async function getPublishedPostBySlug(slug: string): Promise<BlogPost | u
     .eq('is_published', true)
     .maybeSingle();
 
-  if (error || !data) {
-    return localPosts.find((item) => item.id === slug);
+  if (error || !data || (data as PostRow).is_published === false) {
+    return undefined;
   }
 
   return toPost(data as PostRow);
@@ -180,7 +180,7 @@ export async function getPublishedPostBySlug(slug: string): Promise<BlogPost | u
 
 export async function getPublishedTools(): Promise<ToolItem[]> {
   if (!isSupabaseConfigured || !supabase) {
-    return localTools;
+    return [];
   }
 
   const { data, error } = await supabase
@@ -190,9 +190,9 @@ export async function getPublishedTools(): Promise<ToolItem[]> {
     .order('is_recommended', { ascending: false })
     .order('updated_at', { ascending: false });
 
-  if (error || !hasRemoteData<ToolRow>(data)) {
-    return localTools;
+  if (error) {
+    return [];
   }
 
-  return data.map(toTool);
+  return keepPublishedRows(data as ToolRow[] | null).map(toTool);
 }

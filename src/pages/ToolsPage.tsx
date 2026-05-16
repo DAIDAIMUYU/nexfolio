@@ -5,19 +5,22 @@ import { FilterPills } from '../components/ui/FilterPills';
 import { MotionPage } from '../components/ui/MotionPage';
 import { SectionHeading } from '../components/ui/SectionHeading';
 import { toolCategories } from '../data/categories';
-import { tools as localTools } from '../data/tools';
 import type { ToolCategory } from '../data/types';
 import { useAsyncData } from '../hooks/useAsyncData';
 import { getPublishedTools } from '../lib/contentRepository';
 
 export function ToolsPage() {
   const [category, setCategory] = useState<ToolCategory | '全部'>('全部');
-  const { data: tools, error, loading } = useAsyncData(getPublishedTools, localTools, []);
+  const { data: tools, error, loading } = useAsyncData(getPublishedTools, [], []);
 
   const filteredTools = useMemo(
     () => tools.filter((tool) => category === '全部' || tool.category === category),
     [category, tools],
   );
+
+  const emptyTitle = tools.length === 0 ? '暂无工具' : '没有匹配工具';
+  const emptyDescription =
+    tools.length === 0 ? '工具发布后会显示在这里。' : '可以切换分类继续查看已发布工具。';
 
   return (
     <MotionPage>
@@ -25,9 +28,9 @@ export function ToolsPage() {
         <SectionHeading
           eyebrow="Tools"
           title="工具入口"
-          description="区分自研工具和常用资源。没有真实访问地址的工具只展示计划，不跳转到假链接。"
+          description="这里只展示真实发布的工具入口。没有真实链接的内容会保留在 Studio 草稿或未发布状态。"
         />
-        {loading ? <p className="data-note">正在读取工具内容...</p> : null}
+        {loading ? <p className="data-note">正在读取已发布工具...</p> : null}
         {error ? <p className="data-note">{error}</p> : null}
       </section>
       <section className="page-section compact-section">
@@ -49,7 +52,7 @@ export function ToolsPage() {
             ))}
           </div>
         ) : (
-          <EmptyState title="暂时没有匹配工具" description="切换分类后，可以继续查看当前工具库。" />
+          <EmptyState title={emptyTitle} description={emptyDescription} />
         )}
       </section>
     </MotionPage>

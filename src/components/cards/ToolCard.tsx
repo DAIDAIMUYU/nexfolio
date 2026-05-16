@@ -29,7 +29,7 @@ export function ToolCard({ tool }: { tool: ToolItem }) {
       ) : null}
       {internal && tool.url ? (
         <Link className="text-link" to={tool.url}>
-          查看计划
+          查看详情
         </Link>
       ) : null}
       {!tool.url ? <span className="text-link is-disabled">暂未上线</span> : null}

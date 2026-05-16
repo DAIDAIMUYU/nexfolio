@@ -1,16 +1,13 @@
 import { Link, useParams } from 'react-router-dom';
 import { EmptyState } from '../components/ui/EmptyState';
 import { MotionPage } from '../components/ui/MotionPage';
-import { posts as localPosts } from '../data/posts';
 import { useAsyncData } from '../hooks/useAsyncData';
 import { getPublishedPostBySlug, getPublishedPosts } from '../lib/contentRepository';
 
 export function BlogDetailPage() {
   const { id = '' } = useParams();
-  const localIndex = localPosts.findIndex((item) => item.id === id);
-  const fallback = localPosts[localIndex];
-  const { data: post, loading } = useAsyncData(() => getPublishedPostBySlug(id), fallback, [id]);
-  const { data: posts } = useAsyncData(getPublishedPosts, localPosts, []);
+  const { data: post, loading } = useAsyncData(() => getPublishedPostBySlug(id), undefined, [id]);
+  const { data: posts } = useAsyncData(getPublishedPosts, [], []);
   const index = posts.findIndex((item) => item.id === id);
   const previous = posts[index - 1];
   const next = posts[index + 1];
@@ -21,7 +18,7 @@ export function BlogDetailPage() {
         <section className="page-section">
           <EmptyState
             title="文章不存在"
-            description="这篇文章可能还没有发布，或链接已经调整。"
+            description="这篇文章可能尚未发布，或链接已经调整。"
             actionLabel="返回博客列表"
             actionTo="/blog"
           />
@@ -34,7 +31,7 @@ export function BlogDetailPage() {
     return (
       <MotionPage>
         <section className="page-section">
-          <EmptyState title="正在读取文章" description="正在加载文章内容，未配置 Supabase 时会自动使用本地数据。" />
+          <EmptyState title="正在读取文章" description="正在加载已发布文章内容。" />
         </section>
       </MotionPage>
     );
@@ -46,7 +43,7 @@ export function BlogDetailPage() {
         <span className="eyebrow">{post.category}</span>
         <h1>{post.title}</h1>
         <div className="card-meta article-meta">
-          <span>{post.date}</span>
+          <span>{post.date || '未设置日期'}</span>
           <span>{post.tags.join(' / ')}</span>
         </div>
         <p className="lead">{post.summary}</p>

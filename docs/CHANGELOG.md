@@ -4,22 +4,54 @@
 
 ---
 
+## 2026-05-17：第二阶段 UI / 架构重构
+
+### 新增
+
+- 新增 `packages/tavern/`，将 Tavern / roleplay 相关源码与文档从 NexFolio 主站隔离，为后续独立部署预留结构。
+- 新增首页“个人介绍 + 当前重点”Hero，替换模板化展示卡片。
+- 新增前台空状态策略：博客为空显示“暂无文章”，项目为空显示“暂无项目”，工具为空显示“暂无工具”，首页模块为空显示“暂未发布内容”。
+- 新增发布内容渲染测试、空状态测试、Supabase 空表测试和草稿隐藏测试。
+
+### 重构
+
+- 主站移除 Tavern import、`/roleplay` 入口和导航项，NexFolio 只保留首页、项目、博客、工具、关于页、Studio 与 Supabase 内容系统。
+- 前台内容层取消示例数据 fallback，只读取 Supabase `is_published = true` 内容；未配置、请求失败或空表时返回空数组。
+- 清空前台本地项目、博客、工具示例数据，避免真实站点展示演示卡片。
+- 首页信息结构调整为 Hero、About / Current Focus、精选项目、最新博客、工具、Footer。
+- 统一数据类型、分类常量和卡片文案，减少历史编码残留和模板感。
+
+### 验证
+
+- `npm run lint`：通过。
+- `npm run test`：通过，Vitest 覆盖空状态、空表、发布内容显示和草稿隐藏。
+- `npm run build`：通过，Vite bundle 已不再包含主站 Tavern 代码。
+- `npm run test:ui`：通过，Playwright 覆盖主导航、深层路由、空状态、Studio 登录和移动端宽度。
+
+### 保留
+
+- Studio 后台、Supabase SQL、草稿/发布流程继续保留。
+- Tavern 代码未删除，只从主站隔离。
+- 当前阶段不拆分线上子站，不引入评论、多用户、支付、Storage、Realtime 或 Edge Function。
+
+---
+
 ## 2026-05-16：完成第二阶段 Supabase Studio 轻后台
 
 ### 新增
 
 - 安装并接入 `@supabase/supabase-js`，通过 `VITE_SUPABASE_URL` 和 `VITE_SUPABASE_ANON_KEY` 读取配置。
-- 新增统一内容访问层，前台项目、博客、工具优先读取 Supabase 已发布内容，未配置、请求失败或数据为空时自动回退本地数据。
+- 新增统一内容访问层，前台项目、博客、工具优先读取 Supabase 已发布内容。
 - 新增 `/studio/login`、`/studio`、`/studio/posts`、`/studio/projects`、`/studio/tools` 及新建/编辑路由。
 - 新增 Supabase Auth 邮箱密码登录、受保护 Studio 路由、登出和未配置提示。
 - 新增博客、项目、工具的轻量 CRUD 表单，支持草稿、发布、取消发布和删除。
 - 新增 `supabase/schema.sql`，包含 `posts`、`projects`、`tools` 表、更新时间 trigger、RLS policy 和后期迁移字段。
 - 新增 `.env.example` 和 `docs/SUPABASE_SETUP.md`，说明本地、Vercel、SQL、RLS 和首个站主账号配置方式。
-- 新增列表字段转换、fallback 数据访问、Studio 未配置降级和 Playwright Studio 登录页测试。
+- 新增列表字段转换、Studio 未配置降级和 Playwright Studio 登录页测试。
 
 ### 优化
 
-- 首页、项目页、项目详情页、博客页、博客详情页、工具页改为异步读取内容，并保持本地 fallback 体验。
+- 首页、项目页、项目详情页、博客页、博客详情页、工具页改为异步读取已发布内容。
 - Studio 后台沿用 NexFolio 蓝白极简玻璃风格，桌面和移动端均可使用。
 - 保留第一阶段 Vercel rewrite、SEO 文件、横向 rail、404、空状态和 Footer 优化。
 

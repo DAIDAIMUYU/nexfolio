@@ -5,7 +5,6 @@ import { FilterPills } from '../components/ui/FilterPills';
 import { MotionPage } from '../components/ui/MotionPage';
 import { SectionHeading } from '../components/ui/SectionHeading';
 import { projectStatuses, projectTypes } from '../data/categories';
-import { projects as localProjects } from '../data/projects';
 import type { ProjectStatus, ProjectType } from '../data/types';
 import { useAsyncData } from '../hooks/useAsyncData';
 import { getPublishedProjects } from '../lib/contentRepository';
@@ -13,7 +12,7 @@ import { getPublishedProjects } from '../lib/contentRepository';
 export function ProjectsPage() {
   const [type, setType] = useState<ProjectType | '全部'>('全部');
   const [status, setStatus] = useState<ProjectStatus | '全部'>('全部');
-  const { data: projects, error, loading } = useAsyncData(getPublishedProjects, localProjects, []);
+  const { data: projects, error, loading } = useAsyncData(getPublishedProjects, [], []);
 
   const filteredProjects = useMemo(
     () =>
@@ -23,15 +22,19 @@ export function ProjectsPage() {
     [projects, status, type],
   );
 
+  const emptyTitle = projects.length === 0 ? '暂无项目' : '没有匹配项目';
+  const emptyDescription =
+    projects.length === 0 ? '项目发布后会显示在这里。' : '可以切换类型或状态筛选，继续浏览已发布项目。';
+
   return (
     <MotionPage>
       <section className="page-section page-hero">
         <SectionHeading
           eyebrow="Projects"
           title="项目作品"
-          description="展示个人开发项目、网页工具、AI 应用、自动化工具和实验作品。"
+          description="这里仅展示从 Supabase 发布流读取的真实项目。草稿和未发布内容不会出现在前台。"
         />
-        {loading ? <p className="data-note">正在读取项目内容...</p> : null}
+        {loading ? <p className="data-note">正在读取已发布项目...</p> : null}
         {error ? <p className="data-note">{error}</p> : null}
       </section>
       <section className="page-section compact-section">
@@ -44,7 +47,7 @@ export function ProjectsPage() {
             ))}
           </div>
         ) : (
-          <EmptyState title="暂时没有匹配项目" description="换一个类型或状态筛选，继续浏览当前作品库。" />
+          <EmptyState title={emptyTitle} description={emptyDescription} />
         )}
       </section>
     </MotionPage>

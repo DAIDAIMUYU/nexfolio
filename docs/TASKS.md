@@ -196,7 +196,7 @@
 - [ ] 新增工具新建 / 编辑页面。
 - [ ] 支持工具 slug、分类、图标、推荐、自研标记、排序。
 - [ ] 前台项目、博客、工具页面改为从 Supabase 读取 published 内容。
-- [ ] 保留本地 fallback 数据，避免接口异常时页面完全空白。
+- [x] 第二阶段重构后取消本地示例 fallback，接口异常时显示空状态。
 - [ ] 增加基础 loading、empty、error 状态。
 - [ ] 配置环境变量文档。
 - [ ] 更新 README 和验收标准。
@@ -220,7 +220,7 @@
 - [x] 新增 `src/lib/supabase.ts`，环境变量缺失时不创建客户端并返回清晰提示。
 - [x] 新增统一内容访问层：`getPublishedPosts`、`getPublishedPostBySlug`、`getPublishedProjects`、`getPublishedProjectBySlug`、`getPublishedTools`。
 - [x] 前台首页、项目页、项目详情页、博客页、博客详情页、工具页优先读取 Supabase published 内容。
-- [x] Supabase 未配置、请求失败或数据为空时，前台自动回退本地 TypeScript 数据。
+- [x] Supabase 未配置、请求失败或数据为空时，前台显示空状态，不再回退示例内容。
 - [x] 新增 loading / error / empty 基础状态，不因 Supabase 缺失白屏。
 - [x] 新增 `/studio/login`，未配置 Supabase 时显示明确提示。
 - [x] 新增受保护 `/studio` 后台路由，未登录访问会跳转登录页。
@@ -232,10 +232,35 @@
 - [x] 新增 `supabase/schema.sql`，包含 `posts`、`projects`、`tools` 表、RLS policy 和更新时间 trigger。
 - [x] SQL 预留 `canonical_url`、`redirect_from`、SEO、排序和精选字段。
 - [x] 新增 `docs/SUPABASE_SETUP.md`，说明 Supabase 项目、SQL、环境变量、Vercel 和站主账号配置。
-- [x] 新增 Vitest 测试：列表字段转换、fallback 数据逻辑、Studio 未配置登录提示。
+- [x] 新增 Vitest 测试：列表字段转换、空状态数据逻辑、Studio 未配置登录提示。
 - [x] 新增 Playwright 测试：`/studio/login` 未配置提示与 `/studio` 跳转登录。
 - [ ] 手动创建 Supabase 项目。
 - [ ] 手动执行 `supabase/schema.sql`。
 - [ ] 手动配置本地 `.env.local` 与 Vercel 环境变量。
 - [ ] 手动创建第一个站主账号。
 - [ ] 配置 Supabase 后进行真实 CRUD 线上验收。
+
+## 18. 第二阶段 UI / 架构重构任务
+
+- [x] 将 Tavern / roleplay 源码迁移到 `packages/tavern/src/roleplay`。
+- [x] 将 Tavern 文档迁移到 `packages/tavern/docs/roleplay-tavern`。
+- [x] 主站移除 `roleplay` import。
+- [x] 主站移除 `/roleplay` 导航入口。
+- [x] 前台取消本地示例数据 fallback。
+- [x] 清空本地项目、博客、工具示例数据。
+- [x] 前台仅展示 Supabase `is_published = true` 内容。
+- [x] Supabase 未配置、请求失败或空表时返回空数组。
+- [x] `/blog` 空状态显示“暂无文章”。
+- [x] `/projects` 空状态显示“暂无项目”。
+- [x] `/tools` 空状态显示“暂无工具”。
+- [x] 首页模块为空时显示“暂未发布内容”。
+- [x] 重构首页 Hero 为“个人介绍 + 当前重点”。
+- [x] 首页结构调整为 Hero、About / Current Focus、精选项目、最新博客、工具、Footer。
+- [x] 统一卡片和页面中文文案，减少模板演示感。
+- [x] 保留 Studio 后台、Supabase SQL、草稿/发布/编辑/删除能力。
+- [x] 新增空状态、Supabase 空表、发布内容显示、草稿隐藏测试。
+- [x] 执行 `npm run lint`。
+- [x] 执行 `npm run test`。
+- [x] 执行 `npm run build`。
+- [x] 执行 `npm run test:ui`。
+- [ ] 完成最终 commit，等待手动 push。

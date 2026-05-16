@@ -1,14 +1,14 @@
 import { useEffect, useState, type DependencyList } from 'react';
 
-interface AsyncDataState<T> {
+interface AsyncState<T> {
   data: T;
   error: string | null;
   loading: boolean;
 }
 
-export function useAsyncData<T>(loader: () => Promise<T>, fallback: T, dependencies: DependencyList = []) {
-  const [state, setState] = useState<AsyncDataState<T>>({
-    data: fallback,
+export function useAsyncData<T>(loader: () => Promise<T>, emptyValue: T, dependencies: DependencyList = []) {
+  const [state, setState] = useState<AsyncState<T>>({
+    data: emptyValue,
     error: null,
     loading: true,
   });
@@ -17,7 +17,6 @@ export function useAsyncData<T>(loader: () => Promise<T>, fallback: T, dependenc
     let active = true;
 
     setState((current) => ({ ...current, loading: true, error: null }));
-
     loader()
       .then((data) => {
         if (active) {
@@ -26,13 +25,14 @@ export function useAsyncData<T>(loader: () => Promise<T>, fallback: T, dependenc
       })
       .catch(() => {
         if (active) {
-          setState({ data: fallback, error: '远程数据暂时不可用，已切换到本地内容。', loading: false });
+          setState({ data: emptyValue, error: '内容服务暂时不可用，当前显示空状态。', loading: false });
         }
       });
 
     return () => {
       active = false;
     };
+    // The caller owns this small hook's reload boundary; values are stable route/page inputs.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, dependencies);
 

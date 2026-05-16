@@ -21,7 +21,7 @@ export function StudioLoginPage() {
       <section className="studio-login">
         <EmptyState
           title="Supabase 未配置"
-          description={`${supabaseConfigMessage} 前台页面会继续使用本地 TypeScript 数据。`}
+          description={`${supabaseConfigMessage} 前台会显示空状态，不展示示例内容。`}
           actionLabel="返回前台"
           actionTo="/"
         />

@@ -1,8 +1,9 @@
 import { expect, test } from '@playwright/test';
 
-test('main navigation opens first-version pages', async ({ page }) => {
+test('main navigation opens the NexFolio pages without Tavern coupling', async ({ page }) => {
   await page.goto('/');
   await expect(page.getByRole('heading', { name: '个人数字平台', exact: true })).toBeVisible();
+  await expect(page.getByText('持续构建中的个人数字平台')).toBeVisible();
 
   const menuButton = page.getByRole('button', { name: '菜单' });
   if (await menuButton.isVisible()) {
@@ -29,6 +30,9 @@ test('main navigation opens first-version pages', async ({ page }) => {
   }
   await page.getByRole('link', { name: '关于', exact: true }).click();
   await expect(page.getByRole('heading', { name: '关于我' })).toBeVisible();
+
+  await page.goto('/roleplay');
+  await expect(page.getByRole('heading', { name: '页面没有找到' })).toBeVisible();
 });
 
 test('deep routes and public SEO files are reachable locally', async ({ page }) => {
@@ -45,7 +49,6 @@ test('deep routes and public SEO files are reachable locally', async ({ page }) 
   for (const route of routes) {
     await page.goto(route);
     await expect(page.locator('#root')).toBeVisible();
-    await expect(page.getByText('页面没有找到')).toHaveCount(0);
   }
 
   const robots = await page.request.get('/robots.txt');
@@ -57,40 +60,27 @@ test('deep routes and public SEO files are reachable locally', async ({ page }) 
   expect(await sitemap.text()).toContain('https://nexfolio-one.vercel.app/blog/testing-from-day-one');
 });
 
-test('project and blog detail pages include richer content', async ({ page }) => {
-  await page.goto('/projects/nexfolio');
-  await expect(page.getByText('项目背景')).toBeVisible();
-  await expect(page.getByText('为什么做')).toBeVisible();
-  await expect(page.getByText('解决什么问题')).toBeVisible();
-  await expect(page.getByText('访问链接状态')).toBeVisible();
-
-  await page.goto('/blog/testing-from-day-one');
-  await expect(page.getByRole('heading', { name: '从第一天开始建立测试体系' })).toBeVisible();
-  await expect(page.getByText('测试不是项目收尾时的补丁。')).toBeVisible();
-});
-
-test('horizontal rails support wheel-assisted horizontal scroll', async ({ page }, testInfo) => {
-  test.skip(testInfo.project.name === 'mobile', 'wheel-assisted scrolling is a desktop pointer behavior');
-
+test('empty public content states render without local cards', async ({ page }) => {
   await page.goto('/');
-  const rail = page.getByLabel('精选项目横向滑动', { exact: true });
+  await expect(page.getByRole('heading', { name: '暂未发布内容' }).first()).toBeVisible();
 
-  const before = await rail.evaluate((element) => element.scrollLeft);
-  await rail.hover();
-  await page.mouse.wheel(0, 460);
-  await expect.poll(async () => rail.evaluate((element) => element.scrollLeft)).toBeGreaterThan(before);
+  await page.goto('/projects');
+  await expect(page.getByRole('heading', { name: '暂无项目' })).toBeVisible();
 
-  await page.getByRole('button', { name: '向右切换' }).first().click();
-  await expect.poll(async () => rail.evaluate((element) => element.scrollLeft)).toBeGreaterThan(0);
+  await page.goto('/blog');
+  await expect(page.getByRole('heading', { name: '暂无文章' })).toBeVisible();
+
+  await page.goto('/tools');
+  await expect(page.getByRole('heading', { name: '暂无工具' })).toBeVisible();
 });
 
-test('studio login degrades gracefully without Supabase env vars', async ({ page }) => {
+test('studio login works with or without Supabase env vars', async ({ page }) => {
   await page.goto('/studio/login');
-  await expect(page.getByRole('heading', { name: 'Supabase 未配置' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: /Supabase 未配置|站主登录/ })).toBeVisible();
 
   await page.goto('/studio');
   await expect(page).toHaveURL(/\/studio\/login$/);
-  await expect(page.getByRole('heading', { name: 'Supabase 未配置' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: /Supabase 未配置|站主登录/ })).toBeVisible();
 });
 
 test('mobile navigation uses a compact menu and layout stays within viewport', async ({ page }) => {

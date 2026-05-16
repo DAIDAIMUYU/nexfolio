@@ -10,7 +10,7 @@ export function BlogCard({ post }: { post: BlogPost }) {
         <i aria-hidden="true" />
       </div>
       <div className="card-meta">
-        <span>{post.date}</span>
+        <span>{post.date || '未设置日期'}</span>
         <span>{post.category}</span>
       </div>
       <h3>{post.title}</h3>

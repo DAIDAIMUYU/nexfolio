@@ -698,7 +698,7 @@ personal-digital-platform/
 已实现范围：
 
 - 前台内容读取层优先读取 Supabase 中 `is_published = true` 的 `posts`、`projects`、`tools`。
-- 当 Supabase 未配置、请求失败或数据为空时，前台自动回退到当前本地 TypeScript 数据，保证线上展示不白屏。
+- 当 Supabase 未配置、请求失败或数据为空时，前台显示空状态，不再回退到示例内容。
 - `/studio/login` 支持 Supabase Auth 邮箱密码登录；未配置 Supabase 时显示清晰提示。
 - `/studio` 下页面需要登录访问；未登录访问会跳转到 `/studio/login`。
 - Studio 包含概览、博客、项目、工具管理列表，以及新建、编辑、草稿、发布、取消发布、删除能力。
@@ -713,3 +713,31 @@ personal-digital-platform/
 - 本地 `.env.local` 与 Vercel 环境变量需要站主手动配置。
 - 首个站主账号需要站主在 Supabase Auth 中创建。
 - 配置真实 Supabase 后，需要再次进行线上 CRUD 与 published-only 前台展示验收。
+
+---
+
+## 20. 第二阶段 UI / 架构重构补充
+
+本轮重构目标是把 NexFolio 从“模板演示站”升级为“真实长期运营的个人数字平台”。主站必须内容驱动、结构清晰、可维护，并与 Tavern / roleplay 系统解耦。
+
+### 20.1 Tavern 结构隔离
+
+- Tavern / roleplay / chat / memory / worldbook / provider / prompt / character / conversation 等相关逻辑迁移到 `packages/tavern/`。
+- NexFolio 主站不再 import Tavern 源码，不再在主导航暴露 `/roleplay`。
+- Tavern 代码不删除，只隔离，为后续独立部署预留。
+- 主站只保留首页、项目、博客、工具、关于页、Studio 后台和 Supabase 内容系统。
+
+### 20.2 前台真实内容策略
+
+- 前台只展示 Supabase 已发布内容，即 `is_published = true`。
+- 本地项目、博客、工具数据不得作为公开 fallback。
+- Supabase 未配置、请求失败或空表时，页面显示空状态。
+- 草稿、未发布、归档内容不得出现在前台。
+- 空状态文案：博客“暂无文章”，项目“暂无项目”，工具“暂无工具”，首页模块“暂未发布内容”。
+
+### 20.3 首页结构与视觉
+
+- 首页结构调整为 Hero、About / Current Focus、精选项目、最新博客、工具、Footer。
+- Hero 右侧改为“个人介绍 + 当前重点”，不再使用 Now Building、Supabase Ready、Blue Glass UI 等模板化内容。
+- Hero 内容强调独立开发者、长期建设、真实内容流和当前重点。
+- 保持蓝白极简玻璃风格，但降低 SaaS landing page 感，提升个人主页真实感。
