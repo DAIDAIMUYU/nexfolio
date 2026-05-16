@@ -30,11 +30,20 @@ describe('NexFolio app', () => {
     expect(screen.queryByText('从工具集合到个人数字平台')).not.toBeInTheDocument();
   });
 
-  it('renders project detail route', () => {
+  it('renders richer project detail route', () => {
     renderApp('/projects/nexfolio');
 
     expect(screen.getByRole('heading', { name: 'NexFolio 个人数字平台' })).toBeInTheDocument();
     expect(screen.getByText('项目背景')).toBeInTheDocument();
-    expect(screen.getByText('核心功能')).toBeInTheDocument();
+    expect(screen.getByText('为什么做')).toBeInTheDocument();
+    expect(screen.getByText('解决什么问题')).toBeInTheDocument();
+    expect(screen.getByText('访问链接状态')).toBeInTheDocument();
+  });
+
+  it('renders graceful 404 for unknown routes', () => {
+    renderApp('/unknown');
+
+    expect(screen.getByRole('heading', { name: '页面没有找到' })).toBeInTheDocument();
+    expect(screen.getAllByRole('link', { name: '返回首页' }).length).toBeGreaterThan(0);
   });
 });

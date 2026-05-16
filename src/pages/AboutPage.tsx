@@ -36,9 +36,12 @@ export function AboutPage() {
         <article className="glass-card about-panel">
           <h2>联系与说明</h2>
           <p>{site.description}</p>
-          <a className="text-link" href={`mailto:${site.contact.email}`}>
-            {site.contact.email}
-          </a>
+          <div className="footer-links inline">
+            <a className="text-link" href={site.contact.github} target="_blank" rel="noreferrer">
+              GitHub 仓库
+            </a>
+            <span>{site.contact.emailLabel}</span>
+          </div>
         </article>
       </section>
     </MotionPage>

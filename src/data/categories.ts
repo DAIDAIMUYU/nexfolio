@@ -20,11 +20,4 @@ export const blogCategories: BlogCategory[] = [
   '生活想法',
 ];
 
-export const toolCategories: ToolCategory[] = [
-  '自研工具',
-  'AI 工具',
-  '开发工具',
-  '效率工具',
-  '设计工具',
-  '资源网站',
-];
+export const toolCategories: ToolCategory[] = ['自研工具', 'AI 工具', '开发工具', '效率工具', '设计工具', '资源网站'];

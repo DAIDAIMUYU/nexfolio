@@ -1,4 +1,5 @@
 import { Link, useParams } from 'react-router-dom';
+import { EmptyState } from '../components/ui/EmptyState';
 import { MotionPage } from '../components/ui/MotionPage';
 import { posts } from '../data/posts';
 
@@ -12,11 +13,8 @@ export function BlogDetailPage() {
   if (!post) {
     return (
       <MotionPage>
-        <section className="page-section page-hero">
-          <h1>文章不存在</h1>
-          <Link className="secondary-button" to="/blog">
-            返回博客列表
-          </Link>
+        <section className="page-section">
+          <EmptyState title="文章不存在" description="这篇文章可能还没有发布，或链接已经调整。" actionLabel="返回博客列表" actionTo="/blog" />
         </section>
       </MotionPage>
     );
@@ -27,15 +25,15 @@ export function BlogDetailPage() {
       <article className="page-section article-shell glass-card">
         <span className="eyebrow">{post.category}</span>
         <h1>{post.title}</h1>
-        <div className="card-meta">
+        <div className="card-meta article-meta">
           <span>{post.date}</span>
           <span>{post.tags.join(' / ')}</span>
         </div>
         <p className="lead">{post.summary}</p>
         <div className="article-content">
-          {post.content.split('。').map((paragraph) =>
-            paragraph.trim() ? <p key={paragraph}>{paragraph.trim()}。</p> : null,
-          )}
+          {post.content.map((paragraph) => (
+            <p key={paragraph}>{paragraph}</p>
+          ))}
         </div>
         <div className="detail-actions split">
           <Link className="secondary-button" to="/blog">

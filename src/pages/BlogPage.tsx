@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { BlogCard } from '../components/cards/BlogCard';
+import { EmptyState } from '../components/ui/EmptyState';
 import { FilterPills } from '../components/ui/FilterPills';
 import { MotionPage } from '../components/ui/MotionPage';
 import { SectionHeading } from '../components/ui/SectionHeading';
@@ -29,7 +30,7 @@ export function BlogPage() {
         <SectionHeading
           eyebrow="Blog"
           title="博客记录"
-          description="开发记录、项目复盘、教程笔记、学习记录和个人想法。"
+          description="开发记录、项目复盘、学习笔记和个人数字平台的持续建设过程。"
         />
       </section>
       <section className="page-section compact-section">
@@ -42,11 +43,15 @@ export function BlogPage() {
           />
         </div>
         <FilterPills items={blogCategories} value={category} onChange={setCategory} label="博客分类筛选" />
-        <div className="card-grid">
-          {filteredPosts.map((post) => (
-            <BlogCard post={post} key={post.id} />
-          ))}
-        </div>
+        {filteredPosts.length > 0 ? (
+          <div className="card-grid">
+            {filteredPosts.map((post) => (
+              <BlogCard post={post} key={post.id} />
+            ))}
+          </div>
+        ) : (
+          <EmptyState title="没有找到相关文章" description="可以清空搜索词，或切换分类继续阅读。" />
+        )}
       </section>
     </MotionPage>
   );

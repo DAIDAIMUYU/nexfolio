@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { ToolCard } from '../components/cards/ToolCard';
+import { EmptyState } from '../components/ui/EmptyState';
 import { FilterPills } from '../components/ui/FilterPills';
 import { MotionPage } from '../components/ui/MotionPage';
 import { SectionHeading } from '../components/ui/SectionHeading';
@@ -21,7 +22,7 @@ export function ToolsPage() {
         <SectionHeading
           eyebrow="Tools"
           title="工具入口"
-          description="区分自研工具和常用工具，方便快速进入高频资源。"
+          description="区分自研工具和常用资源。没有真实访问地址的工具只展示计划，不跳转到假链接。"
         />
       </section>
       <section className="page-section compact-section">
@@ -32,15 +33,19 @@ export function ToolsPage() {
           </div>
           <div className="glass-card metric-card">
             <strong>{tools.filter((tool) => !tool.isSelfBuilt).length}</strong>
-            <span>常用工具</span>
+            <span>常用资源</span>
           </div>
         </div>
         <FilterPills items={toolCategories} value={category} onChange={setCategory} label="工具分类筛选" />
-        <div className="card-grid tools-grid">
-          {filteredTools.map((tool) => (
-            <ToolCard tool={tool} key={tool.id} />
-          ))}
-        </div>
+        {filteredTools.length > 0 ? (
+          <div className="card-grid tools-grid">
+            {filteredTools.map((tool) => (
+              <ToolCard tool={tool} key={tool.id} />
+            ))}
+          </div>
+        ) : (
+          <EmptyState title="暂时没有匹配工具" description="切换分类后，可以继续查看当前工具库。" />
+        )}
       </section>
     </MotionPage>
   );

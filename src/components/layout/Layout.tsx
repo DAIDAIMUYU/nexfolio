@@ -1,4 +1,5 @@
-import { NavLink } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { NavLink, useLocation } from 'react-router-dom';
 import { site } from '../../data/site';
 
 const navItems = [
@@ -10,17 +11,40 @@ const navItems = [
 ];
 
 export function Layout({ children }: { children: React.ReactNode }) {
+  const [menuOpen, setMenuOpen] = useState(false);
+  const location = useLocation();
+
+  useEffect(() => {
+    setMenuOpen(false);
+  }, [location.pathname]);
+
   return (
     <div className="site-shell">
       <header className="topbar">
         <NavLink to="/" className="brand" aria-label="返回首页">
           <span className="brand-mark">N</span>
           <span>
-            <strong>{site.name}</strong>
-            <small>{site.shortName}</small>
+            <strong>{site.shortName}</strong>
+            <small>{site.name}</small>
           </span>
         </NavLink>
-        <nav className="nav-links" aria-label="主导航">
+        <button
+          className="menu-toggle"
+          type="button"
+          aria-expanded={menuOpen}
+          aria-controls="primary-navigation"
+          onClick={() => setMenuOpen((open) => !open)}
+        >
+          <span />
+          <span />
+          <span />
+          <strong>菜单</strong>
+        </button>
+        <nav
+          className={`nav-links ${menuOpen ? 'is-open' : ''}`}
+          id="primary-navigation"
+          aria-label="主导航"
+        >
           {navItems.map((item) => (
             <NavLink
               key={item.to}
@@ -35,10 +59,16 @@ export function Layout({ children }: { children: React.ReactNode }) {
       <main>{children}</main>
       <footer className="footer">
         <div>
-          <strong>{site.name}</strong>
+          <strong>{site.shortName}</strong>
           <p>{site.description}</p>
+          <span className="footer-version">{site.version} · Studio 入口预留，当前未开放后台</span>
         </div>
-        <a href={`mailto:${site.contact.email}`}>{site.contact.email}</a>
+        <div className="footer-links" aria-label="站点链接">
+          <a href={site.contact.github} target="_blank" rel="noreferrer">
+            GitHub
+          </a>
+          <span>{site.contact.emailLabel}</span>
+        </div>
       </footer>
     </div>
   );

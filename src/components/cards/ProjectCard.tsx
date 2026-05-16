@@ -5,7 +5,9 @@ export function ProjectCard({ project, featured = false }: { project: ProjectIte
   return (
     <article className={`glass-card project-card ${featured ? 'is-featured' : ''}`}>
       <div className="cover-panel" aria-label={project.cover ?? project.title}>
-        <span>{project.type}</span>
+        <span className="cover-kicker">{project.type}</span>
+        <strong>{project.cover ?? project.title}</strong>
+        <i aria-hidden="true" />
       </div>
       <div className="card-meta">
         <span className="status-dot" />

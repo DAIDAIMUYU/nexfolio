@@ -266,3 +266,41 @@ npm install 报告依赖审计漏洞；当前未执行强制修复，以保持 N
 ```text
 先完成第一阶段线上补丁，再进入第二阶段 Supabase 轻后台。Supabase 后台稳定后，再根据内容规模逐步评估博客、项目、工具是否拆分为独立子站。
 ```
+
+## 16. 第一阶段补丁本地验收
+
+- [x] 已新增 `vercel.json`，Vercel 深层路由将 rewrite 到 `/index.html`。
+- [x] `/`、`/projects`、`/projects/nexfolio`、`/blog`、`/blog/testing-from-day-one`、`/tools`、`/about` 已在 Playwright 本地预览中直接访问通过。
+- [x] 已新增 `public/favicon.svg`。
+- [x] 已新增 `public/robots.txt`。
+- [x] 已新增 `public/sitemap.xml`。
+- [x] 已补充 `index.html` 基础 SEO、Open Graph、Twitter Card 和 theme-color。
+- [x] 已清理 `hello@nexfolio.dev`、`https://github.com/`、`https://example.com` 等无意义占位内容。
+- [x] 无真实链接的项目和工具已改为“暂未上线”或计划入口，不跳转到假地址。
+- [x] 横向滑动模块已支持鼠标滚轮横向滚动，并在边界允许恢复页面纵向滚动。
+- [x] 横向模块已增加左右切换按钮、进度条和边缘渐隐提示。
+- [x] 项目、博客、工具卡片封面比例已统一调整，移除不协调的嵌套占位块观感。
+- [x] 移动端导航已改为菜单按钮展开，覆盖 390px、430px、768px 验收宽度。
+- [x] 项目详情页已补充正式案例页结构。
+- [x] 博客详情页已优化长文阅读体验。
+- [x] 工具页已区分自研工具和常用资源，并标记推荐工具。
+- [x] 已增加优雅 404 页面和空状态。
+- [x] `npm run lint` 通过。
+- [x] `npm run test` 通过。
+- [x] `npm run build` 通过。
+- [x] `npm run test:ui` 通过。
+- [~] Vercel 线上复验等待 GitHub push 触发重新部署后确认。
+
+问题记录：
+
+```text
+第一阶段阻塞问题已在本地预览和自动化测试中修复。线上正式验收需要等待 Vercel 完成新提交部署后，再逐项访问核心路径和 SEO 文件。
+```
+
+## 17. 阶段状态更新
+
+验收状态：
+
+```text
+第一阶段线上补丁本地验收通过；线上正式验收待 Vercel 重新部署后复验。Supabase 后台仍属于下一阶段，尚未开始实现。
+```

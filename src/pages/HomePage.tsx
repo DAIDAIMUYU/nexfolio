@@ -14,7 +14,7 @@ import { tools } from '../data/tools';
 const entryCards = [
   { title: '项目作品', text: '查看正在构建和已经沉淀的数字产品。', to: '/projects' },
   { title: '博客记录', text: '阅读开发过程、学习笔记和项目复盘。', to: '/blog' },
-  { title: '工具入口', text: '进入自研工具与常用外部资源。', to: '/tools' },
+  { title: '工具入口', text: '进入自研工具计划与常用外部资源。', to: '/tools' },
   { title: '关于我', text: '了解当前关注方向和站点说明。', to: '/about' },
 ];
 
@@ -71,11 +71,7 @@ export function HomePage() {
       </MotionSection>
 
       <MotionSection className="page-section">
-        <SectionHeading
-          eyebrow="Blog"
-          title="最新博客"
-          description="记录开发过程、项目复盘和学习笔记。"
-        />
+        <SectionHeading eyebrow="Blog" title="最新博客" description="记录开发过程、项目复盘和学习笔记。" />
         <HorizontalRail label="最新博客横向滑动">
           {latestPosts.map((post) => (
             <BlogCard post={post} key={post.id} />
@@ -84,7 +80,11 @@ export function HomePage() {
       </MotionSection>
 
       <MotionSection className="page-section">
-        <SectionHeading eyebrow="Tools" title="常用工具入口" description="自研工具与常用资源统一收纳。" />
+        <SectionHeading
+          eyebrow="Tools"
+          title="常用工具入口"
+          description="自研工具计划与常用资源统一收纳，避免跳转到无意义占位地址。"
+        />
         <HorizontalRail label="工具横向滑动">
           {tools.slice(0, 5).map((tool) => (
             <ToolCard tool={tool} key={tool.id} />

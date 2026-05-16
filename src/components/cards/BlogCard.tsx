@@ -4,6 +4,11 @@ import type { BlogPost } from '../../data/types';
 export function BlogCard({ post }: { post: BlogPost }) {
   return (
     <article className="glass-card blog-card">
+      <div className="cover-panel blog-cover" aria-label={post.cover ?? post.title}>
+        <span className="cover-kicker">{post.category}</span>
+        <strong>{post.cover ?? post.title}</strong>
+        <i aria-hidden="true" />
+      </div>
       <div className="card-meta">
         <span>{post.date}</span>
         <span>{post.category}</span>
