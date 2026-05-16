@@ -1,0 +1,58 @@
+import type { ToolItem } from './types';
+
+export const tools: ToolItem[] = [
+  {
+    id: 'prompt-desk',
+    name: 'Prompt Desk',
+    description: '沉淀高频 AI 提示词和场景模板的自研工具入口。',
+    category: '自研工具',
+    url: '/projects/ai-prompt-desk',
+    icon: 'PD',
+    isSelfBuilt: true,
+  },
+  {
+    id: 'automation-hub',
+    name: 'Automation Hub',
+    description: '收纳个人自动化脚本、运行说明和维护状态。',
+    category: '自研工具',
+    url: '/projects/mini-automation-hub',
+    icon: 'AH',
+    isSelfBuilt: true,
+  },
+  {
+    id: 'vite',
+    name: 'Vite',
+    description: '快速、轻量的现代前端构建工具。',
+    category: '开发工具',
+    url: 'https://vitejs.dev',
+    icon: 'VI',
+    isSelfBuilt: false,
+  },
+  {
+    id: 'react',
+    name: 'React',
+    description: '用于构建组件化界面的前端库。',
+    category: '开发工具',
+    url: 'https://react.dev',
+    icon: 'RE',
+    isSelfBuilt: false,
+  },
+  {
+    id: 'figma',
+    name: 'Figma',
+    description: '用于界面草图、设计协作和视觉规范整理。',
+    category: '设计工具',
+    url: 'https://figma.com',
+    icon: 'FG',
+    isSelfBuilt: false,
+  },
+  {
+    id: 'notion',
+    name: 'Notion',
+    description: '用于计划、笔记和项目资料整理的效率工具。',
+    category: '效率工具',
+    url: 'https://notion.so',
+    icon: 'NO',
+    isSelfBuilt: false,
+  },
+];
