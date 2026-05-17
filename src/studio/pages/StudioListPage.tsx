@@ -12,7 +12,7 @@ export function StudioListPage() {
   const params = useParams();
   const kind = isStudioKind(params.kind) ? params.kind : 'posts';
   const [records, setRecords] = useState<StudioRecord[]>([]);
-  const [filter, setFilter] = useState<'all' | 'published' | 'draft'>('all');
+  const [filter, setFilter] = useState<'all' | 'public' | 'private'>('all');
   const [query, setQuery] = useState('');
   const [message, setMessage] = useState('');
 
@@ -26,11 +26,11 @@ export function StudioListPage() {
   const filtered = useMemo(() => {
     const keyword = query.trim().toLowerCase();
     return records.filter((record) => {
-      const matchesStatus =
-        filter === 'all' || (filter === 'published' ? record.is_published : !record.is_published);
+      const matchesVisibility =
+        filter === 'all' || (filter === 'public' ? record.is_published : !record.is_published);
       const title = record.title || record.name || '';
       const matchesQuery = !keyword || title.toLowerCase().includes(keyword) || record.slug.includes(keyword);
-      return matchesStatus && matchesQuery;
+      return matchesVisibility && matchesQuery;
     });
   }, [filter, query, records]);
 
@@ -52,10 +52,10 @@ export function StudioListPage() {
           value={query}
           onChange={(event) => setQuery(event.target.value)}
         />
-        <select aria-label="发布状态筛选" value={filter} onChange={(event) => setFilter(event.target.value as typeof filter)}>
+        <select aria-label="公开状态筛选" value={filter} onChange={(event) => setFilter(event.target.value as typeof filter)}>
           <option value="all">全部</option>
-          <option value="published">已发布</option>
-          <option value="draft">草稿</option>
+          <option value="public">公开</option>
+          <option value="private">不公开</option>
         </select>
       </div>
       {message ? <p className="form-message">{message}</p> : null}
@@ -63,9 +63,13 @@ export function StudioListPage() {
         <div className="glass-card studio-list">
           {filtered.map((record) => (
             <Link to={`/studio/${kind}/${record.id}/edit`} className="studio-list-row" key={record.id}>
-              <span>{record.title || record.name}</span>
-              <small>{record.slug}</small>
-              <small>{record.is_published ? '已发布' : '草稿'}</small>
+              <span>
+                <strong>{record.title || record.name}</strong>
+                <small>{record.slug}</small>
+              </span>
+              <small className={record.is_published ? 'visibility-pill is-public' : 'visibility-pill'}>
+                {record.is_published ? '公开' : '不公开'}
+              </small>
               <small>{new Date(record.updated_at).toLocaleString()}</small>
             </Link>
           ))}

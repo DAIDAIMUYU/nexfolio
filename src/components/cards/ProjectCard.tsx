@@ -11,7 +11,7 @@ export function ProjectCard({ project, featured = false }: { project: ProjectIte
       </div>
       <div className="card-meta">
         <span className="status-dot" />
-        {project.status}
+        {project.progress}
       </div>
       <h3>{project.title}</h3>
       <p>{project.description}</p>

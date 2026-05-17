@@ -3,10 +3,11 @@ export type StudioKind = 'posts' | 'projects' | 'tools';
 export interface StudioRecord {
   id: string;
   slug: string;
-  title: string;
-  summary: string;
-  category: string;
-  status: string;
+  title?: string;
+  summary?: string;
+  category?: string;
+  status?: string;
+  progress?: string;
   is_published: boolean;
   published_at: string | null;
   updated_at: string;
@@ -28,6 +29,9 @@ export interface StudioRecord {
   link_status?: string | null;
   future_plan?: string[];
   is_featured?: boolean;
+  sort_order?: number;
+  seo_title?: string | null;
+  seo_description?: string | null;
   url?: string | null;
   icon?: string | null;
   is_self_built?: boolean;
@@ -41,7 +45,8 @@ export interface StudioFormValues {
   content: string;
   category: string;
   tags: string;
-  status: string;
+  isPublished: boolean;
+  progress: string;
   type: string;
   techStack: string;
   demoUrl: string;
@@ -55,6 +60,9 @@ export interface StudioFormValues {
   linkStatus: string;
   futurePlan: string;
   isFeatured: boolean;
+  sortOrder: string;
+  seoTitle: string;
+  seoDescription: string;
   url: string;
   icon: string;
   isSelfBuilt: boolean;

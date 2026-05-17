@@ -226,7 +226,7 @@
 - [x] 新增受保护 `/studio` 后台路由，未登录访问会跳转登录页。
 - [x] 新增 Studio 概览、博客列表、项目列表、工具列表。
 - [x] 新增博客、项目、工具新建与编辑表单。
-- [x] 支持保存草稿、发布、取消发布、删除。
+- [x] 支持通过“是否公开”切换前台可见性，并支持删除。
 - [x] 支持 tags、tech_stack、features、future_plan 文本输入并转换为数组。
 - [x] 发布时写入 `is_published = true`，并在 `published_at` 为空时写入当前时间。
 - [x] 新增 `supabase/schema.sql`，包含 `posts`、`projects`、`tools` 表、RLS policy 和更新时间 trigger。
@@ -264,3 +264,33 @@
 - [x] 执行 `npm run build`。
 - [x] 执行 `npm run test:ui`。
 - [ ] 完成最终 commit，等待手动 push。
+
+## 19. Studio 工作流与内容模型优化
+
+- [x] 博客 slug 改为根据标题自动生成。
+- [x] 项目 slug 改为根据项目名称自动生成。
+- [x] 工具 slug 改为根据工具名称自动生成。
+- [x] 中文标题自动生成 `post/project/tool-YYYYMMDD-短码` fallback slug。
+- [x] slug 字段默认移入“高级设置”。
+- [x] 用户手动修改 slug 后，标题变化不再覆盖。
+- [x] 编辑已有内容时不自动修改 slug。
+- [x] 保存前检查 slug 重复，重复时自动追加短码。
+- [x] 新增 `generateSlug()`、`normalizeSlug()`、`createUniqueSlug()`、`hasUserEditedSlug()`。
+- [x] Studio 表单移除 status 下拉，改为“是否公开”。
+- [x] 新建内容默认勾选公开。
+- [x] 前台读取层严格只展示 `is_published = true` 的内容。
+- [x] 博客分类改为下拉选择。
+- [x] 项目分类改为下拉选择。
+- [x] 工具分类改为下拉选择。
+- [x] 项目新增独立 `progress` 字段和“项目进度”下拉。
+- [x] 项目卡片和项目详情页显示项目进度。
+- [x] 新增 `supabase/migrations/20260517_add_project_progress.sql`。
+- [x] 项目技术栈与项目进度分离。
+- [x] 清理 Studio 后台旧发布按钮、取消发布按钮和 status UI。
+- [x] 修复 Studio 页面中文编码残留。
+- [x] 更新 slug、公开内容过滤和空表测试。
+- [x] 执行 `npm run lint`。
+- [x] 执行 `npm run test`。
+- [x] 执行 `npm run build`。
+- [x] 执行 `npm run test:ui`。
+- [ ] 手动执行 `git push origin main` 上传 GitHub。

@@ -4,27 +4,27 @@ import { EmptyState } from '../components/ui/EmptyState';
 import { FilterPills } from '../components/ui/FilterPills';
 import { MotionPage } from '../components/ui/MotionPage';
 import { SectionHeading } from '../components/ui/SectionHeading';
-import { projectStatuses, projectTypes } from '../data/categories';
-import type { ProjectStatus, ProjectType } from '../data/types';
+import { projectProgressOptions, projectTypes } from '../data/categories';
+import type { ProjectProgress, ProjectType } from '../data/types';
 import { useAsyncData } from '../hooks/useAsyncData';
 import { getPublishedProjects } from '../lib/contentRepository';
 
 export function ProjectsPage() {
   const [type, setType] = useState<ProjectType | '全部'>('全部');
-  const [status, setStatus] = useState<ProjectStatus | '全部'>('全部');
+  const [progress, setProgress] = useState<ProjectProgress | '全部'>('全部');
   const { data: projects, error, loading } = useAsyncData(getPublishedProjects, [], []);
 
   const filteredProjects = useMemo(
     () =>
       projects.filter(
-        (project) => (type === '全部' || project.type === type) && (status === '全部' || project.status === status),
+        (project) => (type === '全部' || project.type === type) && (progress === '全部' || project.progress === progress),
       ),
-    [projects, status, type],
+    [projects, progress, type],
   );
 
   const emptyTitle = projects.length === 0 ? '暂无项目' : '没有匹配项目';
   const emptyDescription =
-    projects.length === 0 ? '项目发布后会显示在这里。' : '可以切换类型或状态筛选，继续浏览已发布项目。';
+    projects.length === 0 ? '项目发布后会显示在这里。' : '可以切换类型或项目进度筛选，继续浏览已发布项目。';
 
   return (
     <MotionPage>
@@ -39,7 +39,7 @@ export function ProjectsPage() {
       </section>
       <section className="page-section compact-section">
         <FilterPills items={projectTypes} value={type} onChange={setType} label="项目类型筛选" />
-        <FilterPills items={projectStatuses} value={status} onChange={setStatus} label="项目状态筛选" />
+        <FilterPills items={projectProgressOptions} value={progress} onChange={setProgress} label="项目进度筛选" />
         {filteredProjects.length > 0 ? (
           <div className="card-grid">
             {filteredProjects.map((project) => (

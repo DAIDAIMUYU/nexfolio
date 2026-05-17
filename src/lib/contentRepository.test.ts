@@ -29,10 +29,7 @@ describe('content repository', () => {
       { slug: 'draft-post', is_published: false },
     ];
 
-    expect(keepPublishedRows(rows)).toEqual([
-      { slug: 'published-post', is_published: true },
-      { slug: 'legacy-row-without-flag' },
-    ]);
+    expect(keepPublishedRows(rows)).toEqual([{ slug: 'published-post', is_published: true }]);
   });
 
   it('handles an empty Supabase table as an empty public state', () => {

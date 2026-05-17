@@ -313,7 +313,7 @@ npm install 报告依赖审计漏洞；当前未执行强制修复，以保持 N
 - [x] 未配置 Supabase 时，`/studio/login` 显示清晰配置提示，不白屏。
 - [x] 未登录访问 `/studio` 会跳转到 `/studio/login`。
 - [x] Studio 路由已包含概览、博客、项目、工具列表和新建/编辑页面。
-- [x] Studio 表单支持草稿、发布、取消发布、删除。
+- [x] Studio 表单支持通过“是否公开”切换前台可见性，并支持删除。
 - [x] 前台读取层只查询 `is_published = true` 的内容。
 - [x] `draft` 内容不会通过公开读取层主动请求。
 - [x] `supabase/schema.sql` 已包含 `posts`、`projects`、`tools` 三张表。
@@ -380,4 +380,38 @@ npm install 报告依赖审计漏洞；当前未执行强制修复，以保持 N
 
 ```text
 第二阶段 UI / 架构重构已完成，本地 lint、test、build、test:ui 均通过。真实 Supabase 项目仍需站主手动配置后进行线上发布流验收。
+```
+
+## 21. Studio 工作流与内容模型验收
+
+- [x] 新建博客时可根据标题自动生成 slug。
+- [x] 新建项目时可根据项目名称自动生成 slug。
+- [x] 新建工具时可根据工具名称自动生成 slug。
+- [x] 英文标题会生成可读 slug。
+- [x] 中文标题会生成带日期和短码的 fallback slug。
+- [x] slug 默认隐藏在“高级设置”中。
+- [x] 用户手动修改 slug 后，标题变化不再覆盖。
+- [x] 编辑已有内容时不会自动改动原 slug。
+- [x] 保存前会检查重复 slug 并追加短码。
+- [x] Studio 表单不再显示 status 下拉。
+- [x] Studio 表单使用“是否公开”控制 `is_published`。
+- [x] 新建内容默认公开。
+- [x] 前台只展示 `is_published = true` 的内容。
+- [x] 博客分类为固定下拉。
+- [x] 项目分类为固定下拉。
+- [x] 工具分类为固定下拉。
+- [x] 项目进度独立为 `progress` 字段。
+- [x] 项目卡片显示项目进度。
+- [x] 项目详情页显示项目进度。
+- [x] 技术栈标签与项目进度分离。
+- [x] 已提供 `supabase/migrations/20260517_add_project_progress.sql`。
+- [x] `npm run lint` 通过。
+- [x] `npm run test` 通过。
+- [x] `npm run build` 通过。
+- [x] `npm run test:ui` 通过。
+
+验收状态：
+
+```text
+Studio 工作流重构已完成；后台录入从手填 slug / status 下拉切换为自动 slug、分类下拉、项目进度和是否公开。真实 Supabase 环境仍需站主配置后进行线上 CRUD 复验。
 ```

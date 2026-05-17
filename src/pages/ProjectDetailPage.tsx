@@ -41,7 +41,7 @@ export function ProjectDetailPage() {
           <h1>{project.title}</h1>
           <p className="lead">{project.detail}</p>
           <div className="tag-row">
-            <span className="tag">{project.status}</span>
+            <span className="tag">{project.progress}</span>
             {project.techStack.map((tech) => (
               <span className="tag" key={tech}>
                 {tech}
@@ -111,7 +111,7 @@ export function ProjectDetailPage() {
         </div>
         <aside className="detail-side glass-card">
           <div className="cover-panel large">
-            <span className="cover-kicker">{project.status}</span>
+            <span className="cover-kicker">{project.progress}</span>
             <strong>{project.cover ?? project.title}</strong>
             <i aria-hidden="true" />
           </div>

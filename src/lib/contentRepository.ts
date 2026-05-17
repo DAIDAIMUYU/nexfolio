@@ -8,6 +8,7 @@ type ProjectRow = {
   description: string;
   type: string | null;
   status: string | null;
+  progress: string | null;
   tags: string[] | null;
   tech_stack: string[] | null;
   cover: string | null;
@@ -50,17 +51,35 @@ type ToolRow = {
 };
 
 export function keepPublishedRows<T extends { is_published?: boolean | null }>(rows: T[] | null | undefined): T[] {
-  return Array.isArray(rows) ? rows.filter((row) => row.is_published !== false) : [];
+  return Array.isArray(rows) ? rows.filter((row) => row.is_published === true) : [];
+}
+
+function toProjectProgress(progress: string | null, legacyStatus: string | null): ProjectItem['progress'] {
+  if (progress) {
+    return progress as ProjectItem['progress'];
+  }
+
+  if (legacyStatus === 'published') {
+    return '已上线';
+  }
+
+  if (legacyStatus === 'archived') {
+    return '已归档';
+  }
+
+  return '开发中';
 }
 
 function toProject(row: ProjectRow): ProjectItem {
+  const progress = toProjectProgress(row.progress, row.status);
   return {
     id: row.slug,
     title: row.title,
     description: row.description,
     type: (row.type ?? '个人网站') as ProjectItem['type'],
-    status: (row.status ?? '已上线') as ProjectItem['status'],
-    tags: row.tags ?? [],
+    status: progress,
+    progress,
+    tags: row.tags?.length ? row.tags : (row.tech_stack ?? []),
     techStack: row.tech_stack ?? [],
     cover: row.cover ?? undefined,
     demoUrl: row.demo_url ?? undefined,
@@ -99,7 +118,7 @@ function toTool(row: ToolRow): ToolItem {
     icon: row.icon ?? undefined,
     isSelfBuilt: Boolean(row.is_self_built),
     isRecommended: Boolean(row.is_recommended),
-    status: (row.status as ToolItem['status']) ?? '可访问',
+    status: row.url ? '可访问' : '暂未上线',
   };
 }
 
@@ -134,7 +153,7 @@ export async function getPublishedProjectBySlug(slug: string): Promise<ProjectIt
     .eq('is_published', true)
     .maybeSingle();
 
-  if (error || !data || (data as ProjectRow).is_published === false) {
+  if (error || !data || (data as ProjectRow).is_published !== true) {
     return undefined;
   }
 
@@ -171,7 +190,7 @@ export async function getPublishedPostBySlug(slug: string): Promise<BlogPost | u
     .eq('is_published', true)
     .maybeSingle();
 
-  if (error || !data || (data as PostRow).is_published === false) {
+  if (error || !data || (data as PostRow).is_published !== true) {
     return undefined;
   }
 

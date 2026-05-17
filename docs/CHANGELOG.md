@@ -4,6 +4,41 @@
 
 ---
 
+## 2026-05-17：优化 Studio 工作流与内容模型
+
+### 新增
+
+- 新增 slug 工具函数：`generateSlug()`、`normalizeSlug()`、`createUniqueSlug()`、`hasUserEditedSlug()`。
+- Studio 新建博客、项目、工具时根据标题 / 名称自动生成 slug；中文标题使用日期加短码 fallback。
+- 项目新增独立 `progress` 字段和“项目进度”下拉，避免用标签或发布状态表达开发阶段。
+- 新增 Supabase migration：`supabase/migrations/20260517_add_project_progress.sql`。
+- 新增 slug helper 测试，覆盖英文 slug、中文 fallback、手动编辑判断和重复短码。
+
+### 优化
+
+- Studio 表单移除 status 下拉、发布按钮和取消发布按钮，统一改为“是否公开”。
+- 新建内容默认公开；取消勾选即为不公开 / 草稿，前台仍只读取 `is_published = true`。
+- 博客、项目、工具分类均改为固定下拉，减少手输分类导致的数据不一致。
+- slug 默认隐藏在“高级设置”，用户手动修改后不再被标题变化覆盖；编辑已有内容时不自动改 slug。
+- 项目卡片和项目详情页改为展示“项目进度”，技术栈继续作为标签展示。
+- 前台公开读取层严格过滤 `is_published = true`，不再兼容缺失公开标记的旧行。
+- 清理 Studio 页面旧发布语义和中文编码残留。
+
+### 验证
+
+- `npm run lint`：通过。
+- `npm run test`：通过。
+- `npm run build`：通过。
+- `npm run test:ui`：通过。
+- 额外本地浏览器抽查未完成：Node REPL 环境的 Playwright 未安装对应浏览器缓存；项目自带 Playwright 测试已通过。
+
+### 保留
+
+- 数据库 `status` 字段继续保留用于兼容历史数据，但 UI 和前台逻辑不再依赖 status。
+- Supabase 真实项目、环境变量和站主账号仍需人工配置。
+
+---
+
 ## 2026-05-17：第二阶段 UI / 架构重构
 
 ### 新增

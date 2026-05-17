@@ -1,6 +1,6 @@
 # Supabase Setup
 
-本文档用于配置 NexFolio 第二阶段轻量真实后台。前台只展示 Supabase 中已发布内容；未配置 Supabase 或表为空时显示空状态，不再回退到示例内容。
+本文档用于配置 NexFolio 第二阶段轻量真实后台。前台只展示 Supabase 中公开内容；未配置 Supabase 或表为空时显示空状态，不再回退到示例内容。
 
 ## 1. 创建 Supabase 项目
 
@@ -20,6 +20,7 @@
    - `projects`
    - `tools`
 4. SQL 已启用 Row Level Security，并包含公开读取已发布内容、站主管理自己内容的基础策略。
+5. 如果你已经在旧版本执行过 SQL，请额外执行 `supabase/migrations/20260517_add_project_progress.sql`，为项目表补充独立 `progress` 字段。
 
 ## 3. 本地环境变量
 
@@ -56,13 +57,21 @@ VITE_SUPABASE_ANON_KEY
 
 ## 6. 内容发布规则
 
-- `is_published = false` 表示草稿，前台不会显示。
-- 发布内容时会设置 `is_published = true`。
-- 如果 `published_at` 为空，发布时会写入当前时间。
-- 取消发布不会强制清空 `published_at`。
-- 前台只读取已发布内容；如果 Supabase 请求失败或没有数据，会显示空状态。
+- Studio 使用“是否公开”控制 `is_published`。
+- `is_published = false` 表示不公开 / 草稿，前台不会显示。
+- `is_published = true` 表示公开，前台可以读取。
+- 公开内容保存时会写入 `published_at`。
+- 数据库历史 `status` 字段保留兼容，但后台 UI 不再显示 status 下拉。
+- 前台只读取公开内容；如果 Supabase 请求失败或没有数据，会显示空状态。
 
-## 7. RLS 策略说明
+## 7. Studio 字段规则
+
+- slug 会根据标题 / 名称自动生成，中文标题会使用日期加短码 fallback。
+- slug 默认隐藏在“高级设置”，手动修改后不会被标题变化覆盖。
+- 博客、项目、工具分类均使用固定下拉。
+- 项目使用独立“项目进度”字段 `progress`，不要再用标签或 status 表示开发阶段。
+
+## 8. RLS 策略说明
 
 - 匿名访客只能读取 `is_published = true` 的内容。
 - 登录用户只能新增、编辑、删除 `owner_id = auth.uid()` 的内容。

@@ -1,11 +1,26 @@
+import { projectProgressOptions, projectTypes, blogCategories, toolCategories } from '../data/categories';
 import { parseListInput, stringifyListInput } from '../lib/listFields';
+import { createUniqueSlug, generateSlug } from '../lib/slug';
 import { isSupabaseConfigured, supabase, supabaseConfigMessage } from '../lib/supabase';
 import type { StudioFormValues, StudioKind, StudioRecord } from './types';
 
-export const studioLabels: Record<StudioKind, { single: string; plural: string; table: string }> = {
-  posts: { single: '博客', plural: '博客', table: 'posts' },
-  projects: { single: '项目', plural: '项目', table: 'projects' },
-  tools: { single: '工具', plural: '工具', table: 'tools' },
+export const studioLabels: Record<StudioKind, { single: string; plural: string; table: string; slugKind: 'post' | 'project' | 'tool' }> = {
+  posts: { single: '博客', plural: '博客', table: 'posts', slugKind: 'post' },
+  projects: { single: '项目', plural: '项目', table: 'projects', slugKind: 'project' },
+  tools: { single: '工具', plural: '工具', table: 'tools', slugKind: 'tool' },
+};
+
+export const studioOptions = {
+  posts: {
+    categories: blogCategories,
+  },
+  projects: {
+    categories: projectTypes,
+    progress: projectProgressOptions,
+  },
+  tools: {
+    categories: toolCategories,
+  },
 };
 
 function assertSupabase() {
@@ -16,16 +31,42 @@ function assertSupabase() {
   return supabase;
 }
 
+function optionOrDefault(value: string | null | undefined, options: readonly string[], fallback: string) {
+  return value && options.includes(value) ? value : fallback;
+}
+
+function formProgress(record: StudioRecord, fallback: string) {
+  if (record.progress && projectProgressOptions.includes(record.progress as (typeof projectProgressOptions)[number])) {
+    return record.progress;
+  }
+
+  if (record.status === 'published') {
+    return '已上线';
+  }
+
+  if (record.status === 'archived') {
+    return '已归档';
+  }
+
+  return fallback;
+}
+
 export function createEmptyForm(kind: StudioKind): StudioFormValues {
   return {
     slug: '',
     title: '',
     summary: '',
     content: '',
-    category: '',
+    category:
+      kind === 'posts'
+        ? studioOptions.posts.categories[0]
+        : kind === 'projects'
+          ? studioOptions.projects.categories[0]
+          : studioOptions.tools.categories[0],
     tags: '',
-    status: 'draft',
-    type: kind === 'projects' ? '个人网站' : '',
+    isPublished: true,
+    progress: '开发中',
+    type: kind === 'projects' ? studioOptions.projects.categories[0] : '',
     techStack: '',
     demoUrl: '',
     githubUrl: '',
@@ -38,6 +79,9 @@ export function createEmptyForm(kind: StudioKind): StudioFormValues {
     linkStatus: '',
     futurePlan: '',
     isFeatured: false,
+    sortOrder: '0',
+    seoTitle: '',
+    seoDescription: '',
     url: '',
     icon: '',
     isSelfBuilt: kind === 'tools',
@@ -47,16 +91,19 @@ export function createEmptyForm(kind: StudioKind): StudioFormValues {
 
 export function recordToForm(kind: StudioKind, record: StudioRecord): StudioFormValues {
   const base = createEmptyForm(kind);
+  const title = record.title || record.name || '';
+  const categoryOptions = studioOptions[kind].categories;
   return {
     ...base,
     slug: record.slug,
-    title: record.title || record.name || '',
+    title,
     summary: record.summary || record.description || '',
     content: record.content || record.description || '',
-    category: record.category || '',
+    category: optionOrDefault(record.category || record.type, categoryOptions, base.category),
     tags: stringifyListInput(record.tags),
-    status: record.status || 'draft',
-    type: record.type || base.type,
+    isPublished: Boolean(record.is_published),
+    progress: formProgress(record, base.progress),
+    type: optionOrDefault(record.type || record.category, studioOptions.projects.categories, base.type),
     techStack: stringifyListInput(record.tech_stack),
     demoUrl: record.demo_url || '',
     githubUrl: record.github_url || '',
@@ -69,6 +116,9 @@ export function recordToForm(kind: StudioKind, record: StudioRecord): StudioForm
     linkStatus: record.link_status || '',
     futurePlan: stringifyListInput(record.future_plan),
     isFeatured: Boolean(record.is_featured),
+    sortOrder: `${record.sort_order ?? 0}`,
+    seoTitle: record.seo_title || '',
+    seoDescription: record.seo_description || '',
     url: record.url || '',
     icon: record.icon || '',
     isSelfBuilt: Boolean(record.is_self_built),
@@ -101,14 +151,46 @@ export async function getStudioRecord(kind: StudioKind, id: string): Promise<Stu
   return data as StudioRecord | null;
 }
 
-function formToPayload(kind: StudioKind, values: StudioFormValues, publish: boolean) {
-  const now = new Date().toISOString();
+async function slugExists(kind: StudioKind, slug: string, currentId?: string) {
+  const client = assertSupabase();
+  const query = client.from(studioLabels[kind].table).select('id').eq('slug', slug).limit(1);
+  const { data, error } = currentId ? await query.neq('id', currentId) : await query;
+  if (error) {
+    throw error;
+  }
+
+  return Boolean(data?.length);
+}
+
+async function resolveSlug(kind: StudioKind, values: StudioFormValues, id?: string) {
+  const base = values.slug.trim() || generateSlug(values.title, studioLabels[kind].slugKind);
+  return createUniqueSlug(base, (slug) => slugExists(kind, slug, id));
+}
+
+function publicationPayload(values: StudioFormValues) {
+  if (values.isPublished) {
+    return {
+      is_published: true,
+      status: 'published',
+      published_at: new Date().toISOString(),
+    };
+  }
+
+  return {
+    is_published: false,
+    status: 'draft',
+  };
+}
+
+function formToPayload(kind: StudioKind, values: StudioFormValues, slug: string) {
   const base = {
-    slug: values.slug.trim(),
-    category: values.category.trim(),
+    slug,
+    category: values.category,
     tags: parseListInput(values.tags),
-    status: publish ? 'published' : values.status || 'draft',
-    is_published: publish,
+    seo_title: values.seoTitle.trim() || null,
+    seo_description: values.seoDescription.trim() || null,
+    sort_order: Number.parseInt(values.sortOrder, 10) || 0,
+    ...publicationPayload(values),
   };
 
   if (kind === 'posts') {
@@ -118,7 +200,6 @@ function formToPayload(kind: StudioKind, values: StudioFormValues, publish: bool
       summary: values.summary.trim(),
       content: values.content,
       cover: values.cover.trim() || null,
-      published_at: publish ? now : undefined,
     };
   }
 
@@ -128,7 +209,9 @@ function formToPayload(kind: StudioKind, values: StudioFormValues, publish: bool
       title: values.title.trim(),
       description: values.summary.trim(),
       detail: values.content,
-      type: values.type.trim(),
+      type: values.category,
+      progress: values.progress,
+      tags: parseListInput(values.techStack),
       tech_stack: parseListInput(values.techStack),
       demo_url: values.demoUrl.trim() || null,
       github_url: values.githubUrl.trim() || null,
@@ -141,7 +224,6 @@ function formToPayload(kind: StudioKind, values: StudioFormValues, publish: bool
       link_status: values.linkStatus,
       future_plan: parseListInput(values.futurePlan),
       is_featured: values.isFeatured,
-      published_at: publish ? now : undefined,
     };
   }
 
@@ -153,18 +235,13 @@ function formToPayload(kind: StudioKind, values: StudioFormValues, publish: bool
     icon: values.icon.trim() || null,
     is_self_built: values.isSelfBuilt,
     is_recommended: values.isRecommended,
-    published_at: publish ? now : undefined,
   };
 }
 
-export async function saveStudioRecord(
-  kind: StudioKind,
-  values: StudioFormValues,
-  options: { id?: string; publish: boolean },
-) {
+export async function saveStudioRecord(kind: StudioKind, values: StudioFormValues, options: { id?: string }) {
   const client = assertSupabase();
-  if (!values.slug.trim()) {
-    throw new Error('slug 必填');
+  if (!values.title.trim()) {
+    throw new Error(`${studioLabels[kind].single}名称不能为空`);
   }
 
   const { data: userResult, error: userError } = await client.auth.getUser();
@@ -172,7 +249,8 @@ export async function saveStudioRecord(
     throw new Error('请先登录 Studio');
   }
 
-  const payload = formToPayload(kind, values, options.publish);
+  const slug = await resolveSlug(kind, values, options.id);
+  const payload = formToPayload(kind, values, slug);
   const table = studioLabels[kind].table;
 
   if (options.id) {
@@ -180,7 +258,7 @@ export async function saveStudioRecord(
     if (error) {
       throw error;
     }
-    return options.id;
+    return { id: options.id, slug };
   }
 
   const { data, error } = await client
@@ -193,15 +271,7 @@ export async function saveStudioRecord(
     throw error;
   }
 
-  return (data as { id: string }).id;
-}
-
-export async function unpublishStudioRecord(kind: StudioKind, id: string) {
-  const client = assertSupabase();
-  const { error } = await client.from(studioLabels[kind].table).update({ is_published: false, status: 'draft' }).eq('id', id);
-  if (error) {
-    throw error;
-  }
+  return { id: (data as { id: string }).id, slug };
 }
 
 export async function deleteStudioRecord(kind: StudioKind, id: string) {

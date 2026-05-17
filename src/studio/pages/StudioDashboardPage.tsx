@@ -33,9 +33,9 @@ export function StudioDashboardPage() {
     <section className="studio-page">
       <div className="studio-page-head">
         <div>
-          <span className="eyebrow">Dashboard</span>
+          <span className="eyebrow">Studio</span>
           <h1>创作中心概览</h1>
-          <p>管理博客、项目和工具内容。前台只读取已发布内容。</p>
+          <p>管理博客、项目和工具内容。前台只展示已勾选公开的内容。</p>
         </div>
       </div>
       {message ? <p className="form-message">{message}</p> : null}
@@ -47,7 +47,7 @@ export function StudioDashboardPage() {
               <strong>{list.length}</strong>
               <span>{studioLabels[kind].plural}</span>
               <small>
-                已发布 {list.filter((item) => item.is_published).length} / 草稿{' '}
+                公开 {list.filter((item) => item.is_published).length} / 不公开{' '}
                 {list.filter((item) => !item.is_published).length}
               </small>
             </Link>
@@ -59,8 +59,13 @@ export function StudioDashboardPage() {
           <h2>最近更新</h2>
           {recent.map((record) => (
             <Link to={`/studio/${record.kind}/${record.id}/edit`} className="studio-list-row" key={record.id}>
-              <span>{record.title || record.name}</span>
-              <small>{record.is_published ? '已发布' : '草稿'}</small>
+              <span>
+                <strong>{record.title || record.name}</strong>
+                <small>{studioLabels[record.kind].single}</small>
+              </span>
+              <small className={record.is_published ? 'visibility-pill is-public' : 'visibility-pill'}>
+                {record.is_published ? '公开' : '不公开'}
+              </small>
               <small>{new Date(record.updated_at).toLocaleString()}</small>
             </Link>
           ))}

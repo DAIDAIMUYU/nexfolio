@@ -701,7 +701,7 @@ personal-digital-platform/
 - 当 Supabase 未配置、请求失败或数据为空时，前台显示空状态，不再回退到示例内容。
 - `/studio/login` 支持 Supabase Auth 邮箱密码登录；未配置 Supabase 时显示清晰提示。
 - `/studio` 下页面需要登录访问；未登录访问会跳转到 `/studio/login`。
-- Studio 包含概览、博客、项目、工具管理列表，以及新建、编辑、草稿、发布、取消发布、删除能力。
+- Studio 包含概览、博客、项目、工具管理列表，以及新建、编辑、是否公开切换和删除能力。
 - `tags`、`tech_stack`、`features`、`future_plan` 使用 textarea 输入，并在保存时转换为数组字段。
 - `supabase/schema.sql` 提供 `posts`、`projects`、`tools` 建表 SQL、RLS policy 和 `updated_at` 自动更新时间 trigger。
 - `.env.example` 与 `docs/SUPABASE_SETUP.md` 提供环境变量、SQL 执行、Vercel 配置和首个站主账号创建说明。
@@ -741,3 +741,40 @@ personal-digital-platform/
 - Hero 右侧改为“个人介绍 + 当前重点”，不再使用 Now Building、Supabase Ready、Blue Glass UI 等模板化内容。
 - Hero 内容强调独立开发者、长期建设、真实内容流和当前重点。
 - 保持蓝白极简玻璃风格，但降低 SaaS landing page 感，提升个人主页真实感。
+
+---
+
+## 21. Studio 工作流与内容模型优化
+
+本轮优化目标是降低后台录入成本，避免站主手动维护 slug、状态和分类文本，让 Studio 更接近可长期运营的轻量内容后台。
+
+### 21.1 slug 自动生成
+
+- 博客根据标题自动生成 slug。
+- 项目根据项目名称自动生成 slug。
+- 工具根据工具名称自动生成 slug。
+- 英文标题生成可读 slug，例如 `build-personal-platform`。
+- 中文标题使用 fallback slug，例如 `post-20260517-a8f3`、`project-20260517-b7c2`、`tool-20260517-c1d9`。
+- slug 字段默认隐藏到“高级设置”。
+- 用户手动修改 slug 后，后续标题变化不得覆盖。
+- 编辑已有内容时不得自动修改 slug。
+- 保存前检查重复 slug，重复时自动追加短码。
+
+### 21.2 是否公开
+
+- Studio 不再向用户暴露复杂 status 下拉。
+- 内容公开逻辑统一使用 `is_published`。
+- 表单字段显示为“是否公开”。
+- 新建内容默认勾选公开。
+- 取消勾选代表不公开 / 草稿。
+- 前台只展示 `is_published = true` 的内容。
+- 数据库历史 `status` 字段保留兼容，但 UI 和前台读取逻辑不依赖该字段。
+
+### 21.3 分类和项目进度
+
+- 博客分类使用固定下拉：开发记录、项目复盘、AI 工具、学习笔记、网站搭建、生活想法。
+- 项目分类使用固定下拉：个人网站、AI 应用、自动化工具、角色系统、小程序、实验项目。
+- 工具分类使用固定下拉：自研工具、AI 工具、开发工具、效率工具、资源收藏、常用链接。
+- 项目新增独立 `progress` 字段，选项为：构思中、开发中、测试中、已上线、持续维护、已暂停、已归档。
+- 项目进度用于展示开发状态；标签继续用于技术栈，例如 React、Supabase、AI、Vercel。
+- 项目卡片和项目详情页需要显示项目进度。

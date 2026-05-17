@@ -1006,7 +1006,7 @@ button:disabled {
 
 .studio-list-row {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-columns: minmax(0, 1fr) auto auto;
   gap: 12px;
   align-items: center;
   border: 1px solid rgba(47, 123, 255, 0.12);
@@ -1023,6 +1023,21 @@ button:disabled {
 .studio-list-row strong {
   display: block;
   margin-bottom: 5px;
+}
+
+.visibility-pill {
+  border: 1px solid rgba(71, 85, 105, 0.12);
+  border-radius: 999px;
+  padding: 6px 10px;
+  color: var(--muted);
+  background: rgba(248, 250, 252, 0.82);
+  font-weight: 800;
+}
+
+.visibility-pill.is-public {
+  border-color: rgba(47, 123, 255, 0.2);
+  color: var(--primary);
+  background: rgba(231, 240, 255, 0.88);
 }
 
 .studio-toolbar input,
@@ -1086,16 +1101,39 @@ button:disabled {
   padding-top: 16px;
 }
 
+.advanced-settings {
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  padding: 14px;
+  background: rgba(248, 251, 255, 0.62);
+}
+
+.advanced-settings summary {
+  cursor: pointer;
+  color: var(--text);
+  font-weight: 900;
+}
+
+.advanced-settings .form-grid {
+  margin-top: 14px;
+}
+
 .check-row {
   display: flex !important;
   grid-template-columns: none;
   flex-direction: row;
   align-items: center;
+  justify-content: flex-start;
 }
 
 .check-row input {
   width: 18px;
   height: 18px;
+}
+
+.publish-row {
+  min-height: 47px;
+  align-self: end;
 }
 
 .danger-button {
