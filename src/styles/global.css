@@ -5,10 +5,10 @@
 
 :root {
   /* Typography */
-  --font-display: 'Playfair Display', 'Songti SC', 'PingFang SC', 'Microsoft YaHei',
-    'Noto Sans SC', serif;
-  --font-body: 'DM Sans', 'PingFang SC', 'Microsoft YaHei', 'Noto Sans SC', system-ui,
-    -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-display: 'Playfair Display Variable', 'Playfair Display', 'Songti SC', 'PingFang SC',
+    'Microsoft YaHei', 'Noto Sans SC', serif;
+  --font-body: 'DM Sans Variable', 'DM Sans', 'PingFang SC', 'Microsoft YaHei', 'Noto Sans SC',
+    system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   --font-mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, 'PingFang SC', 'Microsoft YaHei',
     monospace;
 
@@ -19,12 +19,12 @@
   --border: #e8e4dc;
   --border-strong: #d4cfc5;
   --text-primary: #1a1814;
-  --text-secondary: #6b6660;
-  --text-muted: #b0aba4;
-  --accent: #c2955a;
-  --accent-deep: #a87c43;
+  --text-secondary: #6b6660; /* 5.44:1 on base */
+  --text-muted: #726e62;     /* AA: 4.87 base / 4.52 subtle / 5.09 white (was #b0aba4 = 2.18) */
+  --accent: #c2955a;         /* decorative gold only (blobs, dots, bullets) */
+  --accent-deep: #8c6320;    /* gold for text/links — AA: 5.13 base / 5.36 white / 4.75 subtle */
   --accent-light: #f0ebe0;
-  --accent-ink: #8b7355;
+  --accent-ink: #735a33;     /* tag/badge text — AA: 5.75 on subtle (was #8b7355 = 3.98) */
   --green-soft: rgba(134, 239, 172, 0.16);
   --green-ink: #5aa674;
 
@@ -76,7 +76,7 @@
   --border-strong: #4a4133;
   --text-primary: #f0ebe0;
   --text-secondary: #a09890;
-  --text-muted: #6b6560;
+  --text-muted: #8e887c;     /* AA: 5.11 base / 4.52 subtle (was #6b6560 = 2.77) */
   --accent: #d6ab6f;
   --accent-deep: #c2955a;
   --accent-light: #2a2419;
@@ -250,7 +250,7 @@ h4 {
 .section-heading span {
   display: inline-block;
   margin-bottom: 12px;
-  color: var(--accent);
+  color: var(--accent-deep);
   font-family: var(--font-mono);
   font-size: 11px;
   font-weight: 600;
@@ -659,7 +659,7 @@ h4 {
   font-style: italic;
   font-weight: 400;
   font-size: clamp(1.05rem, 2.4vw, 1.4rem);
-  color: var(--accent);
+  color: var(--accent-deep);
   margin-bottom: 20px;   /* open up space between subtitle and h1 */
 }
 
@@ -1623,7 +1623,7 @@ h4 {
 
 .footer a,
 .footer-links span {
-  color: var(--accent);
+  color: var(--accent-deep);
   font-weight: 500;
   transition: color 0.2s ease;
 }
