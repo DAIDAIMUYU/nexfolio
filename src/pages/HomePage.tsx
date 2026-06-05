@@ -18,14 +18,6 @@ export function HomePage() {
   const { data: posts, loading: postsLoading } = useAsyncData(getPublishedPosts, [], []);
   const { data: tools, loading: toolsLoading } = useAsyncData(getPublishedTools, [], []);
 
-  // Only render stats that carry a meaningful (non-zero) value.
-  const stats = [
-    { value: projects.length, label: '公开项目' },
-    { value: posts.length, label: '博客记录' },
-    { value: site.stats.experienceYears, suffix: '+', label: '持续构建（年）' },
-    { value: site.stats.commits, suffix: '+', label: 'Commits' },
-  ].filter((stat) => stat.value > 0);
-
   return (
     <MotionPage>
       <section className="hero">
@@ -42,22 +34,6 @@ export function HomePage() {
           </Link>
         </div>
       </section>
-
-      {stats.length > 0 ? (
-        <div className="stats-stripe">
-          <section className="hero-stats" aria-label="平台数据概览">
-            {stats.map((stat) => (
-              <div className="stat" key={stat.label}>
-                <strong>
-                  {stat.value}
-                  {stat.suffix ? <em>{stat.suffix}</em> : null}
-                </strong>
-                <span>{stat.label}</span>
-              </div>
-            ))}
-          </section>
-        </div>
-      ) : null}
 
       <section className="page-section about-cards" aria-label="个人数字平台简介">
         <article className="visual-card main profile-card">
