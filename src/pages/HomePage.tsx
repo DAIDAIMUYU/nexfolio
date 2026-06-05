@@ -21,7 +21,8 @@ export function HomePage() {
   return (
     <MotionPage>
       <section className="hero">
-        <span className="hero-label">Independent Digital Platform</span>
+        <span className="hero-pill">👋 欢迎来到我的主页</span>
+        <span className="hero-subtitle">Independent Digital Platform</span>
         <h1>{site.name}</h1>
         <p className="hero-desc">{site.tagline}</p>
         <div className="hero-actions">
@@ -48,7 +49,7 @@ export function HomePage() {
           </div>
         </article>
         <article className="visual-card focus-card">
-          <h3 className="card-label">当前重点</h3>
+          <span className="eyebrow">当前重点</span>
           <ul>
             {currentFocus.map((item) => (
               <li key={item}>{item}</li>
@@ -59,6 +60,7 @@ export function HomePage() {
 
       <MotionSection className="page-section about-strip">
         <div>
+          <span className="eyebrow">About / Current Focus</span>
           <h2>把项目、写作与工具沉淀成可长期维护的公开系统。</h2>
           <p>{site.description}</p>
         </div>
