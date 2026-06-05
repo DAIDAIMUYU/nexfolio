@@ -93,45 +93,41 @@ export function HomePage() {
         </Link>
       </MotionSection>
 
-      <div className="section-stripe bg-white">
-        <MotionSection className="page-section section-with-divider" id="featured-projects">
-          <SectionHeading
-            eyebrow="Projects"
-            title="精选项目"
-            description={projectsLoading ? '正在读取已发布项目...' : '只展示已发布的真实项目内容。'}
-          />
-          {projects.length > 0 ? (
-            <HorizontalRail label="精选项目横向滑动">
-              {projects.slice(0, 5).map((project, index) => (
-                <ProjectCard project={project} featured={index === 0} key={project.id} />
-              ))}
-            </HorizontalRail>
-          ) : (
-            <EmptyState title="内容即将发布" description="项目会在 Studio 发布后显示在这里。" />
-          )}
-        </MotionSection>
-      </div>
+      <MotionSection className="page-section" id="featured-projects">
+        <SectionHeading
+          eyebrow="Projects"
+          title="精选项目"
+          description={projectsLoading ? '正在读取已发布项目...' : '只展示已发布的真实项目内容。'}
+        />
+        {projects.length > 0 ? (
+          <HorizontalRail label="精选项目横向滑动">
+            {projects.slice(0, 5).map((project, index) => (
+              <ProjectCard project={project} featured={index === 0} key={project.id} />
+            ))}
+          </HorizontalRail>
+        ) : (
+          <EmptyState title="内容即将发布" description="项目会在 Studio 发布后显示在这里。" />
+        )}
+      </MotionSection>
 
-      <div className="section-stripe bg-alt">
-        <MotionSection className="page-section section-with-divider">
-          <SectionHeading
-            eyebrow="Blog"
-            title="最新博客"
-            description={postsLoading ? '正在读取已发布文章...' : '只展示已发布的真实博客内容。'}
-          />
-          {posts.length > 0 ? (
-            <HorizontalRail label="最新博客横向滑动">
-              {posts.slice(0, 3).map((post) => (
-                <BlogCard post={post} key={post.id} />
-              ))}
-            </HorizontalRail>
-          ) : (
-            <EmptyState title="内容即将发布" description="文章会在 Studio 发布后显示在这里。" />
-          )}
-        </MotionSection>
-      </div>
+      <MotionSection className="page-section">
+        <SectionHeading
+          eyebrow="Blog"
+          title="最新博客"
+          description={postsLoading ? '正在读取已发布文章...' : '只展示已发布的真实博客内容。'}
+        />
+        {posts.length > 0 ? (
+          <HorizontalRail label="最新博客横向滑动">
+            {posts.slice(0, 3).map((post) => (
+              <BlogCard post={post} key={post.id} />
+            ))}
+          </HorizontalRail>
+        ) : (
+          <EmptyState title="内容即将发布" description="文章会在 Studio 发布后显示在这里。" />
+        )}
+      </MotionSection>
 
-      <MotionSection className="page-section section-with-divider">
+      <MotionSection className="page-section">
         <SectionHeading
           eyebrow="Tools"
           title="工具"

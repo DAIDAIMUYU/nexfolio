@@ -21,15 +21,13 @@
     <meta name="twitter:description" content="项目作品、博客记录、工具入口与个人数字产品总入口。" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
 
-    <!-- Avoid theme flash: set the saved/preferred theme before first paint -->
+    <!-- Avoid theme flash: apply saved theme before first paint.
+         Defaults to 'light' — only goes dark if user has explicitly toggled. -->
     <script>
       (function () {
         try {
           var stored = localStorage.getItem('theme');
-          var theme =
-            stored ||
-            (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-          document.documentElement.dataset.theme = theme;
+          document.documentElement.dataset.theme = stored === 'dark' ? 'dark' : 'light';
         } catch (e) {
           document.documentElement.dataset.theme = 'light';
         }
