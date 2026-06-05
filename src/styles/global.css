@@ -156,6 +156,14 @@
   background: radial-gradient(ellipse, rgba(134, 239, 172, 0.1) 0%, rgba(134, 239, 172, 0.03) 40%, transparent 70%);
 }
 
+/* Theme switch: circular reveal via the View Transitions API.
+   Disable the default cross-fade so the JS clip-path animation drives it. */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
 * {
   box-sizing: border-box;
 }
@@ -724,10 +732,9 @@ h4 {
   grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
   align-items: stretch;
   gap: 20px;
-  /* Warm echo from hero glow */
-  background: linear-gradient(135deg, rgba(251, 191, 100, 0.04) 0%, transparent 60%);
-  border-radius: var(--radius-lg);
-  padding: 64px 2px 0;   /* breathing room below the stats stripe */
+  padding: 64px 0 0;       /* breathing room below the stats stripe */
+  margin-bottom: 24px;     /* gap before Current Focus */
+  /* intentionally transparent: no background, border, outline or box-shadow */
 }
 
 .visual-card {

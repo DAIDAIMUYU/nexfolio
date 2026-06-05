@@ -36,17 +36,88 @@ export function Layout({ children }: { children: React.ReactNode }) {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  const toggleTheme = () => {
-    setTheme((current) => {
-      const next: Theme = current === 'light' ? 'dark' : 'light';
+  const toggleTheme = (event: React.MouseEvent<HTMLButtonElement>) => {
+    const next: Theme = theme === 'light' ? 'dark' : 'light';
+
+    const applyTheme = () => {
       document.documentElement.dataset.theme = next;
+      setTheme(next);
       try {
         localStorage.setItem('theme', next);
       } catch {
         /* ignore storage failures (private mode) */
       }
-      return next;
+    };
+
+    const prefersReduced =
+      typeof window.matchMedia === 'function' &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    if (prefersReduced) {
+      applyTheme();
+      return;
+    }
+
+    const x = event.clientX;
+    const y = event.clientY;
+    const endRadius = Math.hypot(
+      Math.max(x, window.innerWidth - x),
+      Math.max(y, window.innerHeight - y),
+    );
+
+    const doc = document as Document & {
+      startViewTransition?: (callback: () => void) => { ready: Promise<void> };
+    };
+
+    // Preferred: View Transitions API — expand the new theme as a circle from the click point.
+    if (typeof doc.startViewTransition === 'function') {
+      const transition = doc.startViewTransition(applyTheme);
+      transition.ready
+        .then(() => {
+          document.documentElement.animate(
+            {
+              clipPath: [
+                `circle(0px at ${x}px ${y}px)`,
+                `circle(${endRadius}px at ${x}px ${y}px)`,
+              ],
+            },
+            {
+              duration: 500,
+              easing: 'ease-in-out',
+              pseudoElement: '::view-transition-new(root)',
+            },
+          );
+        })
+        .catch(() => {
+          /* theme is already applied even if the animation fails */
+        });
+      return;
+    }
+
+    // Fallback: an expanding clip-path mask in the destination theme colour.
+    const overlay = document.createElement('div');
+    overlay.style.position = 'fixed';
+    overlay.style.inset = '0';
+    overlay.style.zIndex = '9999';
+    overlay.style.pointerEvents = 'none';
+    overlay.style.background = next === 'dark' ? '#1a1610' : '#fafaf8';
+    overlay.style.clipPath = `circle(0px at ${x}px ${y}px)`;
+    overlay.style.transition = 'clip-path 0.5s ease-in-out';
+    document.body.appendChild(overlay);
+
+    applyTheme();
+
+    requestAnimationFrame(() => {
+      overlay.style.clipPath = `circle(150vmax at ${x}px ${y}px)`;
     });
+
+    overlay.addEventListener(
+      'transitionend',
+      () => {
+        overlay.remove();
+      },
+      { once: true },
+    );
   };
 
   return (
