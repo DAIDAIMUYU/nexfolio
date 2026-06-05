@@ -12,4 +12,9 @@ export const site = {
     github: 'https://github.com/13632924803/nexfolio',
   },
   focus: ['AI 工作流', '自动化', '数字平台', '角色系统'],
+  // 用于首页 Hero 统计卡片的静态指标（项目/博客/工具数量来自实时数据）
+  stats: {
+    experienceYears: 3,
+    commits: 1200,
+  },
 };

@@ -18,10 +18,18 @@ export function HomePage() {
   const { data: posts, loading: postsLoading } = useAsyncData(getPublishedPosts, [], []);
   const { data: tools, loading: toolsLoading } = useAsyncData(getPublishedTools, [], []);
 
+  const stats = [
+    { value: String(projects.length), label: '公开项目' },
+    { value: String(posts.length), label: '博客记录' },
+    { value: String(site.stats.experienceYears), suffix: '+', label: '持续构建 · 年' },
+    { value: String(site.stats.commits), suffix: '+', label: 'Commits' },
+  ];
+
   return (
     <MotionPage>
       <section className="hero page-section">
         <div className="hero-copy">
+          <span className="hero-pill">👋 欢迎来到我的主页</span>
           <span className="eyebrow">Independent Digital Platform</span>
           <h1>{site.name}</h1>
           <p>{site.tagline}</p>
@@ -56,6 +64,17 @@ export function HomePage() {
             </ul>
           </div>
         </aside>
+        <div className="hero-stats" aria-label="平台数据概览">
+          {stats.map((stat) => (
+            <div className="stat-card" key={stat.label}>
+              <strong>
+                {stat.value}
+                {stat.suffix ? <em>{stat.suffix}</em> : null}
+              </strong>
+              <span>{stat.label}</span>
+            </div>
+          ))}
+        </div>
       </section>
 
       <MotionSection className="page-section about-strip">

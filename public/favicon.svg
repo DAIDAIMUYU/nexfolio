@@ -1,10 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="NexFolio">
-  <defs>
-    <linearGradient id="bg" x1="8" y1="6" x2="56" y2="58" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#2F7BFF" />
-      <stop offset="1" stop-color="#8FD0FF" />
-    </linearGradient>
-  </defs>
-  <rect width="64" height="64" rx="18" fill="url(#bg)" />
-  <path d="M18 45V19h7l14 16V19h7v26h-6.5L25 28.4V45h-7Z" fill="white" />
+  <rect width="64" height="64" rx="18" fill="#1a1814" />
+  <rect x="1.5" y="1.5" width="61" height="61" rx="16.5" fill="none" stroke="#c2955a" stroke-opacity="0.55" stroke-width="2" />
+  <path d="M18 45V19h7l14 16V19h7v26h-6.5L25 28.4V45h-7Z" fill="#fafaf8" />
 </svg>

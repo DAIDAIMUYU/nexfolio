@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#eef6ff" />
+    <meta name="theme-color" content="#fafaf8" />
     <meta
       name="description"
       content="NexFolio 是一个个人数字平台，用于展示项目作品、博客记录、工具入口和持续构建的数字产品。"
@@ -13,13 +13,36 @@
     <meta property="og:title" content="NexFolio | 个人数字平台" />
     <meta
       property="og:description"
-      content="聚合项目、博客、工具与个人方向的蓝白极简作品集主站。"
+      content="聚合项目、博客、工具与个人方向的现代浅色暖调作品集主站。"
     />
     <meta property="og:url" content="https://nexfolio-one.vercel.app/" />
     <meta name="twitter:card" content="summary" />
     <meta name="twitter:title" content="NexFolio | 个人数字平台" />
     <meta name="twitter:description" content="项目作品、博客记录、工具入口与个人数字产品总入口。" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+
+    <!-- Avoid theme flash: set the saved/preferred theme before first paint -->
+    <script>
+      (function () {
+        try {
+          var stored = localStorage.getItem('theme');
+          var theme =
+            stored ||
+            (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+          document.documentElement.dataset.theme = theme;
+        } catch (e) {
+          document.documentElement.dataset.theme = 'light';
+        }
+      })();
+    </script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&display=swap"
+      rel="stylesheet"
+    />
+
     <title>NexFolio | 个人数字平台</title>
   </head>
   <body>
