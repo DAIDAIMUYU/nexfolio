@@ -4,6 +4,7 @@ import { generateSlug, hasUserEditedSlug, normalizeSlug } from '../../lib/slug';
 import {
   createEmptyForm,
   deleteStudioRecord,
+  formatStudioError,
   getStudioRecord,
   recordToForm,
   saveStudioRecord,
@@ -78,7 +79,7 @@ export function StudioEditorPage() {
             setMessage('内容不存在或当前账号无权访问。');
           }
         })
-        .catch((error) => setMessage(error instanceof Error ? error.message : '读取内容失败'));
+        .catch((error) => setMessage(formatStudioError(error, '读取内容失败')));
     }
   }, [id, kind]);
 
@@ -122,7 +123,7 @@ export function StudioEditorPage() {
         navigate(`/studio/${kind}/${saved.id}/edit`, { replace: true });
       }
     } catch (error) {
-      setMessage(error instanceof Error ? error.message : '保存失败');
+      setMessage(formatStudioError(error, '保存失败'));
     } finally {
       setSaving(false);
     }

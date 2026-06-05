@@ -23,6 +23,18 @@ export const studioOptions = {
   },
 };
 
+type BasePayload = {
+  slug: string;
+  category: string;
+  tags: string[];
+  seo_title: string | null;
+  seo_description: string | null;
+  sort_order: number;
+  is_published: boolean;
+  status: string;
+  published_at?: string;
+};
+
 function assertSupabase() {
   if (!isSupabaseConfigured || !supabase) {
     throw new Error(supabaseConfigMessage);
@@ -182,8 +194,8 @@ function publicationPayload(values: StudioFormValues) {
   };
 }
 
-function formToPayload(kind: StudioKind, values: StudioFormValues, slug: string) {
-  const base = {
+function createBasePayload(values: StudioFormValues, slug: string): BasePayload {
+  return {
     slug,
     category: values.category,
     tags: parseListInput(values.tags),
@@ -192,6 +204,34 @@ function formToPayload(kind: StudioKind, values: StudioFormValues, slug: string)
     sort_order: Number.parseInt(values.sortOrder, 10) || 0,
     ...publicationPayload(values),
   };
+}
+
+export function buildProjectPayload(base: BasePayload, values: StudioFormValues) {
+  return {
+    ...base,
+    title: values.title.trim(),
+    description: values.summary.trim(),
+    detail: values.content,
+    type: values.category,
+    progress: values.progress,
+    tags: parseListInput(values.techStack),
+    tech_stack: parseListInput(values.techStack),
+    demo_url: values.demoUrl.trim() || null,
+    github_url: values.githubUrl.trim() || null,
+    cover: values.cover.trim() || null,
+    background: values.background,
+    reason: values.reason,
+    problem: values.problem,
+    solution: values.solution,
+    features: parseListInput(values.features),
+    link_status: values.linkStatus,
+    future_plan: parseListInput(values.futurePlan),
+    is_featured: values.isFeatured,
+  };
+}
+
+function formToPayload(kind: StudioKind, values: StudioFormValues, slug: string) {
+  const base = createBasePayload(values, slug);
 
   if (kind === 'posts') {
     return {
@@ -204,27 +244,7 @@ function formToPayload(kind: StudioKind, values: StudioFormValues, slug: string)
   }
 
   if (kind === 'projects') {
-    return {
-      ...base,
-      title: values.title.trim(),
-      description: values.summary.trim(),
-      detail: values.content,
-      type: values.category,
-      progress: values.progress,
-      tags: parseListInput(values.techStack),
-      tech_stack: parseListInput(values.techStack),
-      demo_url: values.demoUrl.trim() || null,
-      github_url: values.githubUrl.trim() || null,
-      cover: values.cover.trim() || null,
-      background: values.background,
-      reason: values.reason,
-      problem: values.problem,
-      solution: values.solution,
-      features: parseListInput(values.features),
-      link_status: values.linkStatus,
-      future_plan: parseListInput(values.futurePlan),
-      is_featured: values.isFeatured,
-    };
+    return buildProjectPayload(base, values);
   }
 
   return {
@@ -236,6 +256,27 @@ function formToPayload(kind: StudioKind, values: StudioFormValues, slug: string)
     is_self_built: values.isSelfBuilt,
     is_recommended: values.isRecommended,
   };
+}
+
+export function formatStudioError(error: unknown, fallback: string): string {
+  if (error instanceof Error && error.message) {
+    return error.message;
+  }
+
+  if (error && typeof error === 'object') {
+    const maybeError = error as { message?: string; details?: string; hint?: string; code?: string };
+    const parts = [maybeError.message, maybeError.details, maybeError.hint].filter(Boolean);
+
+    if (parts.length > 0) {
+      return parts.join(' | ');
+    }
+
+    if (maybeError.code) {
+      return `${fallback} (${maybeError.code})`;
+    }
+  }
+
+  return fallback;
 }
 
 export async function saveStudioRecord(kind: StudioKind, values: StudioFormValues, options: { id?: string }) {

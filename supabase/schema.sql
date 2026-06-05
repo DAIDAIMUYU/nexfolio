@@ -35,6 +35,7 @@ create table if not exists public.projects (
   slug text unique not null,
   title text not null,
   description text not null default '',
+  -- Keep this table aligned with the Studio project payload.
   detail text not null default '',
   category text not null default '个人网站',
   type text not null default '个人网站',
