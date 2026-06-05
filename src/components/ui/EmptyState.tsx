@@ -9,8 +9,8 @@ interface EmptyStateProps {
 
 export function EmptyState({ title, description, actionLabel, actionTo }: EmptyStateProps) {
   return (
-    <div className="glass-card empty-state">
-      <span className="eyebrow">Empty</span>
+    <div className="empty-state">
+      <span className="empty-icon" aria-hidden="true" />
       <h2>{title}</h2>
       <p>{description}</p>
       {actionLabel && actionTo ? (

@@ -26,7 +26,7 @@ describe('NexFolio app', () => {
     expect(screen.getByText('持续构建中的个人数字平台')).toBeInTheDocument();
     expect(screen.getByText('当前重点')).toBeInTheDocument();
     await waitFor(() => {
-      expect(screen.getAllByText('暂未发布内容').length).toBeGreaterThan(0);
+      expect(screen.getAllByText('内容即将发布').length).toBeGreaterThan(0);
     });
   });
 

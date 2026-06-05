@@ -30,7 +30,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
   }, [location.pathname]);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 8);
+    const onScroll = () => setScrolled(window.scrollY > 60);
     onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
@@ -96,7 +96,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
             )}
           </button>
           <button
-            className="menu-toggle"
+            className={`menu-toggle ${menuOpen ? 'is-open' : ''}`}
             type="button"
             aria-expanded={menuOpen}
             aria-controls="primary-navigation"

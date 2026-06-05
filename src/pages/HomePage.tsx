@@ -18,55 +18,35 @@ export function HomePage() {
   const { data: posts, loading: postsLoading } = useAsyncData(getPublishedPosts, [], []);
   const { data: tools, loading: toolsLoading } = useAsyncData(getPublishedTools, [], []);
 
+  // Only render stats that carry a meaningful (non-zero) value.
   const stats = [
-    { value: String(projects.length), label: '公开项目' },
-    { value: String(posts.length), label: '博客记录' },
-    { value: String(site.stats.experienceYears), suffix: '+', label: '持续构建 · 年' },
-    { value: String(site.stats.commits), suffix: '+', label: 'Commits' },
-  ];
+    { value: projects.length, label: '公开项目' },
+    { value: posts.length, label: '博客记录' },
+    { value: site.stats.experienceYears, suffix: '+', label: '持续构建（年）' },
+    { value: site.stats.commits, suffix: '+', label: 'Commits' },
+  ].filter((stat) => stat.value > 0);
 
   return (
     <MotionPage>
-      <section className="hero page-section">
-        <div className="hero-copy">
-          <span className="hero-pill">👋 欢迎来到我的主页</span>
-          <span className="eyebrow">Independent Digital Platform</span>
-          <h1>{site.name}</h1>
-          <p>{site.tagline}</p>
-          <div className="hero-actions">
-            <Link className="primary-button" to="/projects">
-              查看项目
-            </Link>
-            <Link className="secondary-button" to="/blog">
-              阅读博客
-            </Link>
-          </div>
+      <section className="hero">
+        <span className="hero-pill">👋 欢迎来到我的主页</span>
+        <span className="hero-subtitle">Independent Digital Platform</span>
+        <h1>{site.name}</h1>
+        <p className="hero-desc">{site.tagline}</p>
+        <div className="hero-actions">
+          <Link className="primary-button" to="/projects">
+            查看项目
+          </Link>
+          <Link className="secondary-button" to="/blog">
+            阅读博客
+          </Link>
         </div>
-        <aside className="hero-visual hero-profile" aria-label="个人数字平台当前重点">
-          <div className="visual-card main profile-card">
-            <span>持续构建中的个人数字平台</span>
-            <strong>NexFolio</strong>
-            <p>记录项目、博客、工具与长期开发过程。</p>
-            <div className="tag-row">
-              {site.focus.map((item) => (
-                <span className="tag" key={item}>
-                  {item}
-                </span>
-              ))}
-            </div>
-          </div>
-          <div className="visual-card focus-card">
-            <span className="eyebrow">当前重点</span>
-            <ul>
-              {currentFocus.map((item) => (
-                <li key={item}>{item}</li>
-              ))}
-            </ul>
-          </div>
-        </aside>
-        <div className="hero-stats" aria-label="平台数据概览">
+      </section>
+
+      {stats.length > 0 ? (
+        <section className="hero-stats" aria-label="平台数据概览">
           {stats.map((stat) => (
-            <div className="stat-card" key={stat.label}>
+            <div className="stat" key={stat.label}>
               <strong>
                 {stat.value}
                 {stat.suffix ? <em>{stat.suffix}</em> : null}
@@ -74,7 +54,30 @@ export function HomePage() {
               <span>{stat.label}</span>
             </div>
           ))}
-        </div>
+        </section>
+      ) : null}
+
+      <section className="page-section about-cards" aria-label="个人数字平台简介">
+        <article className="visual-card main profile-card">
+          <span>持续构建中的个人数字平台</span>
+          <strong>NexFolio</strong>
+          <p>记录项目、博客、工具与长期开发过程。</p>
+          <div className="tag-row">
+            {site.focus.map((item) => (
+              <span className="tag" key={item}>
+                {item}
+              </span>
+            ))}
+          </div>
+        </article>
+        <article className="visual-card focus-card">
+          <span className="eyebrow">当前重点</span>
+          <ul>
+            {currentFocus.map((item) => (
+              <li key={item}>{item}</li>
+            ))}
+          </ul>
+        </article>
       </section>
 
       <MotionSection className="page-section about-strip">
@@ -83,7 +86,7 @@ export function HomePage() {
           <h2>把项目、写作与工具沉淀成可长期维护的公开系统。</h2>
           <p>{site.description}</p>
         </div>
-        <Link className="primary-button" to="/about">
+        <Link className="secondary-button" to="/about">
           了解更多
         </Link>
       </MotionSection>
@@ -101,7 +104,7 @@ export function HomePage() {
             ))}
           </HorizontalRail>
         ) : (
-          <EmptyState title="暂未发布内容" description="项目会在 Studio 发布后显示在这里。" />
+          <EmptyState title="内容即将发布" description="项目会在 Studio 发布后显示在这里。" />
         )}
       </MotionSection>
 
@@ -118,7 +121,7 @@ export function HomePage() {
             ))}
           </HorizontalRail>
         ) : (
-          <EmptyState title="暂未发布内容" description="文章会在 Studio 发布后显示在这里。" />
+          <EmptyState title="内容即将发布" description="文章会在 Studio 发布后显示在这里。" />
         )}
       </MotionSection>
 
@@ -135,7 +138,7 @@ export function HomePage() {
             ))}
           </HorizontalRail>
         ) : (
-          <EmptyState title="暂未发布内容" description="工具会在 Studio 发布后显示在这里。" />
+          <EmptyState title="内容即将发布" description="工具会在 Studio 发布后显示在这里。" />
         )}
       </MotionSection>
     </MotionPage>

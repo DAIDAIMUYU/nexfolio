@@ -62,7 +62,7 @@ test('deep routes and public SEO files are reachable locally', async ({ page }) 
 
 test('empty public content states render without local cards', async ({ page }) => {
   await page.goto('/');
-  await expect(page.getByRole('heading', { name: '暂未发布内容' }).first()).toBeVisible();
+  await expect(page.getByRole('heading', { name: '内容即将发布' }).first()).toBeVisible();
 
   await page.goto('/projects');
   await expect(page.getByRole('heading', { name: '暂无项目' })).toBeVisible();
