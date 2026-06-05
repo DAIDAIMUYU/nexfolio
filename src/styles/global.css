@@ -391,7 +391,7 @@ h4 {
 .page-section {
   width: min(1180px, calc(100% - 48px));
   margin: 0 auto;
-  padding: 80px 0;
+  padding: 96px 0 80px;
 }
 
 .compact-section {
@@ -522,22 +522,13 @@ h4 {
   position: relative;
   width: min(760px, calc(100% - 40px));
   margin: 0 auto;
-  padding: clamp(48px, 12vh, 110px) 0 clamp(36px, 6vh, 64px);
+  padding: 80px 0 clamp(36px, 6vh, 64px);
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 22px;
   text-align: center;
-  /* Bottom-centre amber blob via layered background (3rd blob, no extra element needed) */
-  background:
-    radial-gradient(ellipse 600px 300px at 50% calc(100% + 50px), rgba(194, 149, 90, 0.12) 0%, transparent 65%),
-    linear-gradient(180deg, #fdfbf7 0%, #fafaf8 30%, #f8f5f0 70%, #fafaf8 100%);
-  overflow: hidden;   /* clips blobs neatly at hero boundary */
-}
-
-/* Dark mode: keep hero background flat */
-[data-theme='dark'] .hero {
-  background: var(--bg-base);
+  /* background is intentionally transparent — body gradient and blobs show through */
 }
 
 .hero::before,
@@ -589,23 +580,25 @@ h4 {
   font-weight: 400;
   font-size: clamp(1.05rem, 2.4vw, 1.4rem);
   color: var(--accent);
+  margin-bottom: 20px;   /* open up space between subtitle and h1 */
 }
 
 .hero h1 {
   margin: 0;
-  color: var(--text-primary);   /* explicitly #1a1814 in light mode */
-  font-size: clamp(42px, 8vw, 68px);
+  color: var(--text-primary);
+  font-size: clamp(48px, 9vw, 72px);
   line-height: 1.06;
   letter-spacing: -0.02em;
 }
 
 .hero-desc {
-  max-width: 520px;
+  max-width: 480px;
   margin: 0;
   color: var(--text-secondary);
   font-weight: 300;
   font-size: 15px;
-  line-height: 1.8;
+  line-height: 1.85;
+  text-align: center;
 }
 
 .hero-actions {
@@ -613,7 +606,7 @@ h4 {
   flex-wrap: wrap;
   justify-content: center;
   gap: 12px;
-  margin-top: 6px;
+  margin-top: 32px;
 }
 
 /* ============================ Stats (full-width band with enhanced borders) ============================ */
@@ -674,11 +667,12 @@ h4 {
 .about-cards {
   display: grid;
   grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
-  gap: 18px;
+  align-items: stretch;
+  gap: 20px;
   /* Warm echo from hero glow */
   background: linear-gradient(135deg, rgba(251, 191, 100, 0.04) 0%, transparent 60%);
   border-radius: var(--radius-lg);
-  padding: 2px;  /* just enough for the bg to show around cards */
+  padding: 2px;
 }
 
 .visual-card {
@@ -686,6 +680,7 @@ h4 {
   border-radius: var(--radius-card);
   background: var(--bg-surface);
   box-shadow: var(--shadow-card);
+  min-height: 180px;
   transition: all 0.25s ease;
 }
 
@@ -696,7 +691,7 @@ h4 {
 }
 
 .visual-card.main {
-  padding: 30px;
+  padding: 28px;
 }
 
 .visual-card.main > span {
@@ -722,7 +717,7 @@ h4 {
 }
 
 .focus-card {
-  padding: 26px 28px;
+  padding: 28px;
 }
 
 .focus-card ul {
@@ -756,11 +751,11 @@ h4 {
 
 .about-strip {
   display: flex;
-  align-items: center;
+  align-items: flex-end;   /* button anchors to bottom-right */
   justify-content: space-between;
   gap: 28px;
   margin-bottom: 8px;
-  padding: 36px 36px 36px 40px;   /* compensate 4px left border */
+  padding: 36px 40px 36px 40px;
   border-left: 4px solid var(--accent);
   border-radius: var(--radius-lg);
   background: linear-gradient(135deg, #f4f0e6 0%, #ede8dc 100%);
@@ -768,6 +763,11 @@ h4 {
 
 .about-strip h2 {
   max-width: 22ch;
+  font-size: clamp(24px, 4vw, 32px);
+}
+
+.about-strip p {
+  margin-top: 16px;
 }
 
 .about-strip .secondary-button {
@@ -1303,8 +1303,8 @@ h4 {
 .empty-state {
   display: grid;
   justify-items: center;
-  gap: 14px;
-  padding: 48px 40px;
+  gap: 0;
+  padding: 60px 40px;
   border: 1.5px dashed var(--border);
   border-radius: var(--radius-card);
   background: #f9f7f3;
@@ -1314,27 +1314,34 @@ h4 {
 .empty-state .empty-icon {
   display: grid;
   place-items: center;
-  width: 54px;
-  height: 54px;
-  border: 1.5px solid var(--border-strong);
+  width: 48px;
+  height: 48px;
+  border: 1.5px solid #d4cfc5;
   border-radius: 999px;
   color: var(--text-muted);
 }
 
 .empty-state .empty-icon::before {
   content: '';
-  width: 16px;
-  height: 16px;
+  width: 14px;
+  height: 14px;
   border: 1.5px solid currentColor;
   border-radius: 999px;
 }
 
 .empty-state h2 {
-  font-size: 1.25rem;
+  margin-top: 16px;
+  margin-bottom: 0;
+  font-size: 15px;
+  font-weight: 500;
+  color: #6b6660;
 }
 
 .empty-state p {
   max-width: 42ch;
+  margin-top: 8px;
+  color: #b0aba4;
+  font-size: 13px;
 }
 
 .empty-state .secondary-button {
@@ -1362,7 +1369,7 @@ h4 {
   gap: 18px;
   width: 100%;
   margin-top: 40px;
-  padding: 44px max(24px, calc((100% - 1180px) / 2));
+  padding: 48px max(24px, calc((100% - 1180px) / 2)) 40px;
   border-top: 1px solid var(--border);
   background: #f4f1eb;
   color: var(--text-secondary);
@@ -1377,7 +1384,7 @@ h4 {
 
 .footer p {
   max-width: 620px;
-  margin: 8px 0 0;
+  margin: 0 0 8px;
   font-weight: 300;
   font-size: 13px;
   line-height: 1.7;
@@ -1408,7 +1415,7 @@ h4 {
 .footer-version {
   display: block;
   margin-top: 10px;
-  color: var(--text-muted);
+  color: #b0aba4;
   font-family: var(--font-mono);
   font-size: 11px;
   letter-spacing: 0.02em;
