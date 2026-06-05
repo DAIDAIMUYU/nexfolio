@@ -69,14 +69,14 @@
 }
 
 :root[data-theme='dark'] {
-  --bg-base: #14120f;
-  --bg-surface: #1f1c17;
-  --bg-subtle: #211d17;
-  --border: #322d25;
-  --border-strong: #443c30;
-  --text-primary: #f5f1e8;
-  --text-secondary: #b8b1a4;
-  --text-muted: #7d766a;
+  --bg-base: #1a1610;        /* warm dark brown, not near-black */
+  --bg-surface: #221c14;
+  --bg-subtle: #282117;
+  --border: #383125;
+  --border-strong: #4a4133;
+  --text-primary: #f0ebe0;
+  --text-secondary: #a09890;
+  --text-muted: #6b6560;
   --accent: #d6ab6f;
   --accent-deep: #c2955a;
   --accent-light: #2a2419;
@@ -84,8 +84,8 @@
   --green-soft: rgba(134, 239, 172, 0.1);
   --green-ink: #79c79a;
 
-  --btn-bg: #efe8db;
-  --btn-ink: #1a1814;
+  --btn-bg: #f5f0e8;
+  --btn-ink: #1a1610;
 
   --blob-warm: rgba(251, 191, 100, 0.12);
   --blob-green: rgba(134, 239, 172, 0.08);
@@ -97,9 +97,63 @@
   --shadow-pop: 0 18px 48px rgba(0, 0, 0, 0.5);
 }
 
-/* Dark mode: override gradient back to flat base colour */
+/* Dark mode: override gradient back to flat warm base colour */
 [data-theme='dark'] body {
   background: var(--bg-base);
+}
+
+/* ---- Dark mode component overrides ----
+   These surfaces use hard-coded light values for light mode; in dark mode
+   they must go dark so light text stays legible (fixes invisible stats). */
+[data-theme='dark'] .stats-stripe {
+  background: linear-gradient(135deg, #241d14 0%, #1f1810 50%, #221b12 100%);
+  border-top-color: #352e22;
+  border-bottom-color: #352e22;
+}
+
+[data-theme='dark'] .about-strip {
+  background: linear-gradient(135deg, #241d14 0%, #1e1810 100%);
+}
+
+[data-theme='dark'] .footer {
+  background: #1f1810;
+}
+
+[data-theme='dark'] .empty-state {
+  background: #1f1912;
+}
+
+/* stats number stays cream; the "+" sign uses warm gold */
+[data-theme='dark'] .stat strong em {
+  color: #c2955a;
+}
+
+/* Hero text + glow tuning for dark mode */
+[data-theme='dark'] .hero h1 {
+  color: #f5f0e8;
+}
+
+[data-theme='dark'] .hero-subtitle {
+  color: #c2955a;
+}
+
+[data-theme='dark'] .hero-pill {
+  background: rgba(194, 149, 90, 0.15);
+  color: #c2955a;
+  border: 1px solid rgba(194, 149, 90, 0.25);
+}
+
+[data-theme='dark'] .secondary-button {
+  border-color: rgba(245, 240, 232, 0.3);
+  color: #a09890;
+}
+
+[data-theme='dark'] .hero::before {
+  background: radial-gradient(ellipse, rgba(251, 191, 100, 0.15) 0%, rgba(251, 191, 100, 0.05) 40%, transparent 70%);
+}
+
+[data-theme='dark'] .hero::after {
+  background: radial-gradient(ellipse, rgba(134, 239, 172, 0.1) 0%, rgba(134, 239, 172, 0.03) 40%, transparent 70%);
 }
 
 * {
@@ -126,7 +180,7 @@ body {
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
-  transition: background 0.4s ease, color 0.4s ease;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 /* Faint grain for warmth/texture */
@@ -614,6 +668,7 @@ h4 {
 /* Full-width stats band with warm gradient */
 .stats-stripe {
   width: 100%;
+  margin-bottom: 64px;
   background: linear-gradient(135deg, #f0ebe0 0%, #f5f0e8 50%, #eee8dc 100%);
   border-top: 1px solid #e0d9ce;
   border-bottom: 1px solid #e0d9ce;
@@ -672,7 +727,7 @@ h4 {
   /* Warm echo from hero glow */
   background: linear-gradient(135deg, rgba(251, 191, 100, 0.04) 0%, transparent 60%);
   border-radius: var(--radius-lg);
-  padding: 2px;
+  padding: 64px 2px 0;   /* breathing room below the stats stripe */
 }
 
 .visual-card {
@@ -1334,13 +1389,13 @@ h4 {
   margin-bottom: 0;
   font-size: 15px;
   font-weight: 500;
-  color: #6b6660;
+  color: var(--text-secondary);   /* #6b6660 in light, legible in dark */
 }
 
 .empty-state p {
   max-width: 42ch;
   margin-top: 8px;
-  color: #b0aba4;
+  color: var(--text-muted);       /* #b0aba4 in light, legible in dark */
   font-size: 13px;
 }
 
