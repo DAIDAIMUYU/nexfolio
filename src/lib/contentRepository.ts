@@ -1,5 +1,5 @@
 import type { BlogPost, ProjectItem, ToolItem } from '../data/types';
-import { contentToParagraphs } from './listFields';
+import { normalizeRichTextContent } from './listFields';
 import { isSupabaseConfigured, supabase } from './supabase';
 
 type ProjectRow = {
@@ -104,7 +104,7 @@ function toPost(row: PostRow): BlogPost {
     tags: row.tags ?? [],
     date: row.published_at ? row.published_at.slice(0, 10) : '',
     cover: row.cover ?? undefined,
-    content: contentToParagraphs(row.content),
+    content: normalizeRichTextContent(row.content),
   };
 }
 

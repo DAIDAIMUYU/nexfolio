@@ -38,7 +38,7 @@ export interface BlogPost {
   tags: string[];
   date: string;
   cover?: string;
-  content: string[];
+  content: string;
 }
 
 export interface ToolItem {

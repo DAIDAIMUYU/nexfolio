@@ -1,4 +1,5 @@
 import { Link, useParams } from 'react-router-dom';
+import { MarkdownContent } from '../components/content/MarkdownContent';
 import { EmptyState } from '../components/ui/EmptyState';
 import { MotionPage } from '../components/ui/MotionPage';
 import { useAsyncData } from '../hooks/useAsyncData';
@@ -47,11 +48,7 @@ export function BlogDetailPage() {
           <span>{post.tags.join(' / ')}</span>
         </div>
         <p className="lead">{post.summary}</p>
-        <div className="article-content">
-          {post.content.map((paragraph) => (
-            <p key={paragraph}>{paragraph}</p>
-          ))}
-        </div>
+        <MarkdownContent content={post.content} className="article-content article-markdown" />
         <div className="detail-actions split">
           <Link className="secondary-button" to="/blog">
             返回博客列表

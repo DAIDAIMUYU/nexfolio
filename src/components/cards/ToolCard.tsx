@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { MarkdownContent } from '../content/MarkdownContent';
 import type { ToolItem } from '../../data/types';
 
 export function ToolCard({ tool }: { tool: ToolItem }) {
@@ -20,7 +21,7 @@ export function ToolCard({ tool }: { tool: ToolItem }) {
           <span>{tool.status ?? '可访问'}</span>
         </div>
         <h3>{tool.name}</h3>
-        <p>{tool.description}</p>
+        <MarkdownContent content={tool.description} className="tool-description markdown-compact" />
       </div>
       {external && tool.url ? (
         <a className="text-link" href={tool.url} target="_blank" rel="noreferrer">
