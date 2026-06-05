@@ -1,13 +1,13 @@
 interface SectionHeadingProps {
-  eyebrow: string;
+  /** Kept for caller compatibility; intentionally not rendered (eyebrow-restraint). */
+  eyebrow?: string;
   title: string;
   description?: string;
 }
 
-export function SectionHeading({ eyebrow, title, description }: SectionHeadingProps) {
+export function SectionHeading({ title, description }: SectionHeadingProps) {
   return (
     <div className="section-heading">
-      <span>{eyebrow}</span>
       <h2>{title}</h2>
       {description ? <p>{description}</p> : null}
     </div>
