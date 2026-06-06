@@ -1,29 +1,229 @@
 # NexFolio
 
-NexFolio 是一个个人数字平台，用来集中展示项目、发布博客内容，并整理常用工具入口。
+个人数字平台 · 博客 · 项目展示 · 工具导航
 
-它既是一个对外展示的个人网站，也是一个长期迭代的内容阵地，包含面向访客的公开页面，以及用于管理内容的轻量 Studio 后台。
+NexFolio 是一个面向个人开发者的数字平台，用于集中管理项目、发布博客内容、展示开发成果以及整理常用工具入口。
 
-## Start
+网站同时提供轻量级 Studio 后台，用于管理博客、项目和工具内容，实现内容统一维护与发布。
+
+> ⚠️ 当前项目仍处于持续开发阶段，部分功能和界面可能会根据实际需求进行调整。
+
+---
+
+## ✨ 项目简介
+
+随着项目数量不断增加，内容逐渐分散在不同平台、笔记软件和聊天记录中，管理和查找变得越来越困难。
+
+NexFolio 的目标是建立一个统一的个人数字空间：
+
+- 集中展示个人项目
+- 发布开发日志与技术博客
+- 整理常用工具入口
+- 长期记录学习与成长过程
+- 打造统一的个人作品集平台
+
+---
+
+## 🚀 在线预览
+
+```text
+开发中
+```
+
+后续将提供正式访问地址。
+
+---
+
+## 📚 主要功能
+
+### 博客系统
+
+- Markdown 编辑与渲染
+- 分类管理
+- 标签管理
+- 草稿与公开状态
+- 文章详情页
+- 响应式阅读体验
+
+### 项目展示
+
+- 项目卡片展示
+- 项目进度管理
+- 技术栈标签
+- GitHub 仓库链接
+- 演示地址跳转
+- 项目详情页
+
+### 工具导航
+
+- 常用工具收录
+- 分类管理
+- 快速跳转
+- 持续扩展
+
+### Studio 后台
+
+- 博客管理
+- 项目管理
+- 工具管理
+- 内容实时同步
+- 移动端适配
+
+---
+
+## 🛠 技术栈
+
+### 前端
+
+```text
+React
+TypeScript
+Vite
+Tailwind CSS
+```
+
+### 数据服务
+
+```text
+Supabase
+```
+
+### 部署
+
+```text
+Vercel
+```
+
+### 开发工具
+
+```text
+Git
+GitHub
+Codex
+Claude Code
+DeepSeek
+```
+
+---
+
+## 📷 项目截图
+
+后续补充：
+
+```text
+首页展示
+博客系统
+项目系统
+Studio 后台
+移动端界面
+```
+
+---
+
+## 📈 当前进度
+
+### 已完成
+
+- 基础框架搭建
+- 首页开发
+- 博客系统
+- 项目系统
+- Studio 后台
+- Markdown 渲染
+- Supabase 数据同步
+- 响应式布局
+
+### 开发中
+
+- 工具导航系统
+- PWA 支持
+- 搜索功能
+- SEO 优化
+- UI 细节完善
+
+### 计划中
+
+- RSS 订阅
+- 数据统计
+- 评论系统
+- 多主题切换
+- AI 辅助写作
+
+---
+
+## 🎯 项目目标
+
+NexFolio 不只是一个个人主页。
+
+它更像一个长期维护的数字档案馆，用于记录项目开发过程、沉淀知识内容，并将所有作品集中展示在同一个平台中。
+
+未来所有个人项目、博客文章以及工具资源都将统一汇总到这里进行管理。
+
+---
+
+## 🗺 未来规划
+
+### 第一阶段
+
+- 完成博客系统
+- 完成项目管理
+- 完成工具管理
+- 完成后台管理
+
+### 第二阶段
+
+- 完成 PWA 支持
+- 增加搜索功能
+- 增加 SEO 优化
+- 完善移动端体验
+
+### 第三阶段
+
+- 评论系统
+- RSS 支持
+- 数据统计
+- 多主题系统
+
+---
+
+## 💻 本地开发
+
+### 安装依赖
 
 ```bash
 npm install
+```
+
+### 启动开发环境
+
+```bash
 npm run dev
 ```
 
-## Validation
+### 构建项目
+
+```bash
+npm run build
+```
+
+### 代码检查
 
 ```bash
 npm run lint
-npm run test
-npm run build
-npm run test:ui
 ```
 
-## Markdown Rendering
+---
 
-- Studio editor keeps plain text Markdown input.
-- Public blog details render Markdown automatically.
-- Public project details and tool descriptions also render Markdown automatically.
-- Supported syntax includes headings, unordered and ordered lists, bold, italic, blockquotes, inline code, fenced code blocks, images, and links.
-- Existing database fields stay unchanged, and historical plain text content remains compatible.
+## 📄 License
+
+仅用于个人学习与项目展示。
+
+---
+
+## 👤 About
+
+作者：DaiDai
+
+NexFolio 是一个持续迭代的个人数字平台，用于记录项目、分享经验、整理知识以及展示个人作品。
+
+欢迎访问与交流。
